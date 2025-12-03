@@ -1,0 +1,30 @@
+# Alacritty 主题配置文件
+# 基于 Catppuccin Mocha
+
+[colors.primary]
+foreground = "#cdd6f4"
+background = "#1f1f28"
+
+[colors.cursor]
+text = "#11111b"
+cursor = "#f5e0dc"
+
+[colors.normal]
+black = "#0C0C0C"
+red = "#f38ba8"
+green = "#a6e3a1"
+yellow = "#f9e2af"
+blue = "#89b4fa"
+magenta = "#cba6f7"
+cyan = "#94e2d5"
+white = "#cdd6f4"
+
+[colors.bright]
+black = "#767676"
+red = "#f38ba8"
+green = "#a6e3a1"
+yellow = "#f9e2af"
+blue = "#89b4fa"
+magenta = "#cba6f7"
+cyan = "#94e2d5"
+white = "#f2f2F2"

@@ -1,0 +1,61 @@
+# ----------------------------------------------------------------------
+# ~/.config/zsh/zshrc (SHARED - Zinit, Plugins, Portable Paths)
+# ----------------------------------------------------------------------
+
+# 1. Zinit 插件管理器 (自动安装与加载)
+ZINIT_HOME="${XDG_DATA_HOME:-${HOME}/.local/share}/zinit/zinit.git"
+if [[ ! -d $ZINIT_HOME ]]; then
+    print -P "%F{red}--- Zinit not found. Installing... ---%f"
+    mkdir -p "$(dirname $ZINIT_HOME)"
+    git clone https://github.com/zdharma-continuum/zinit.git "$ZINIT_HOME"
+fi
+source "${ZINIT_HOME}/zinit.zsh"
+
+# 2. Zinit 插件配置 (所有插件)
+zinit light zdharma-continuum/fast-syntax-highlighting
+zinit light zsh-users/zsh-autosuggestions
+zinit light zsh-users/zsh-completions
+# zinit light autojump/autojump
+zinit light wting/autojump               
+zinit light zsh-users/zsh-history-substring-search
+zinit light sindresorhus/pure
+
+# 3. 快捷键绑定
+bindkey '^ ' autosuggest-accept
+bindkey '→' autosuggest-accept
+bindkey '^E' autosuggest-accept
+bindkey '^J' autosuggest-execute
+
+# 4. 通用工具初始化 (基于 $HOME 的路径)
+export SDKMAN_DIR="$HOME/.sdkman"
+[[ -s "$HOME/.sdkman/bin/sdkman-init.sh" ]] && source "$HOME/.sdkman/bin/sdkman-init.sh"
+
+export NVM_DIR="$HOME/.nvm"
+[ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"
+[ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion"
+
+export PATH="$HOME/fvm/default/bin:$PATH"
+export PATH="$HOME/.pyenv/bin:$PATH"
+eval "$(pyenv init --path)"
+eval "$(pyenv init -)"
+
+export BUN_INSTALL="$HOME/.bun"
+export PATH="$BUN_INSTALL/bin:$PATH"
+[ -s "$BUN_INSTALL/bin/_bun" ] && source "$BUN_INSTALL/bin/_bun"
+
+export PATH="$HOME/.local/bin:$PATH"
+[[ -f "$HOME/.dart-cli-completion/zsh-config.zsh" ]] && . "$HOME/.dart-cli-completion/zsh-config.zsh"
+source <(ng completion script)
+
+# 5. 🚨 动态加载：主机名差异配置 & 私密配置
+# --- 加载主机特定配置 (Stow 链接的目标) ---
+HOST_LOCAL_FILE="$HOME/.config/zsh/$(hostname).local.zsh"
+if [ -f "$HOST_LOCAL_FILE" ]; then
+    source "$HOST_LOCAL_FILE"
+fi
+
+# --- 加载私密文件 (手动创建，不在 Git 中) ---
+SECRETS_FILE="$HOME/.config/zsh/secrets.sh"
+if [ -f "$SECRETS_FILE" ]; then
+    source "$SECRETS_FILE"
+fi
