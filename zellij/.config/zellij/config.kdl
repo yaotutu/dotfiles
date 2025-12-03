@@ -1,0 +1,7 @@
+// Zellij 配置文件
+
+// 基础设置
+default_layout "default"
+
+// 取消注释以设置固定会话名
+// default_session_name "main"

@@ -1,0 +1,6 @@
+// Zellij 快捷键配置文件
+// 如果要完全覆盖默认快捷键,使用: keybinds clear-defaults=true
+
+keybinds {
+
+}

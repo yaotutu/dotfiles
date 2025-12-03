@@ -1,0 +1,6 @@
+// 无状态栏布局 - 极简主义
+layout {
+    default_tab_template {
+        children
+    }
+}
