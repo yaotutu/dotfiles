@@ -59,3 +59,31 @@ SECRETS_FILE="$HOME/.config/zsh/secrets.sh"
 if [ -f "$SECRETS_FILE" ]; then
     source "$SECRETS_FILE"
 fi
+
+
+zj() {
+  # 如果已经在 zellij 里，就别再嵌套了
+  if [[ -n "$ZELLIJ" ]]; then
+    echo "已经在 zellij session 里了：$ZELLIJ_SESSION_NAME"
+    return
+  fi
+
+  local dir="$PWD"
+  local name=""
+
+  # 在家目录时用固定名字
+  if [[ "$dir" == "$HOME" ]]; then
+    name="home"
+  else
+    # 其他情况用当前目录名
+    name="${dir##*/}"
+  fi
+
+  # 把空格变成下划线（按需）
+  name="${name// /_}"
+
+  # 用这个名字启动 / 连接 session
+  command zellij --session "$name" "$@"
+}
+
+[ -f /opt/homebrew/etc/profile.d/autojump.sh ] && . /opt/homebrew/etc/profile.d/autojump.sh
