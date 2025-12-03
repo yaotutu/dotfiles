@@ -25,10 +25,6 @@ if [ -f "$HOST_LOCAL_FILE" ]; then
     source "$HOST_LOCAL_FILE"
 fi
 
-# 5. 主机差异配置
-HOST_LOCAL_FILE="$HOME/.config/zsh/$(hostname).local.zsh"
-[[ -f "$HOST_LOCAL_FILE" ]] && source "$HOST_LOCAL_FILE"
-
 # 6. 私密配置（secrets.sh 由你的加密脚本生成）
 SECRETS_FILE="$HOME/.config/zsh/secrets.sh"
 [[ -f "$SECRETS_FILE" ]] && source "$SECRETS_FILE"
