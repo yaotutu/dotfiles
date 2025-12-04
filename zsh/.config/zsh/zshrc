@@ -5,6 +5,21 @@
 # 1. PATH & 工具初始化
 [[ -r "$HOME/.config/zsh/paths.zsh" ]] && source "$HOME/.config/zsh/paths.zsh"
 
+# 1.1. 机器特定的路径配置 (在通用配置之后加载，可以覆盖)
+HOST_LOCAL_FILE="$HOME/.config/zsh/$(hostname).local.zsh"
+if [ -f "$HOST_LOCAL_FILE" ]; then
+    source "$HOST_LOCAL_FILE"
+fi
+
+# 1.2. 通用别名配置
+[[ -r "$HOME/.config/zsh/aliases.zsh" ]] && source "$HOME/.config/zsh/aliases.zsh"
+
+# 1.3. 机器特定的别名配置
+HOST_LOCAL_ALIASES="$HOME/.config/zsh/$(hostname).local.aliases.zsh"
+if [ -f "$HOST_LOCAL_ALIASES" ]; then
+    source "$HOST_LOCAL_ALIASES"
+fi
+
 # 2. Zinit 本体
 if [[ -r "$HOME/.config/zsh/zinit.zsh" ]]; then
   source "$HOME/.config/zsh/zinit.zsh"
@@ -18,12 +33,8 @@ fi
 [[ -r "$HOME/.config/zsh/functions.zsh" ]] && source "$HOME/.config/zsh/functions.zsh"
 
 
-# 5. 🚨 动态加载：主机名差异配置 & 私密配置
-# --- 加载主机特定配置 (Stow 链接的目标) ---
-HOST_LOCAL_FILE="$HOME/.config/zsh/$(hostname).local.zsh"
-if [ -f "$HOST_LOCAL_FILE" ]; then
-    source "$HOST_LOCAL_FILE"
-fi
+# 5. 🚨 动态加载：其他机器特定配置 (如果有的话)
+# --- 可以在这里添加其他主机特定的配置文件 ---
 
 # 6. 私密配置（secrets.sh 由你的加密脚本生成）
 SECRETS_FILE="$HOME/.config/zsh/secrets.sh"
