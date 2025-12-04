@@ -39,12 +39,3 @@ fi
 # 6. 私密配置（secrets.sh 由你的加密脚本生成）
 SECRETS_FILE="$HOME/.config/zsh/secrets.sh"
 [[ -f "$SECRETS_FILE" ]] && source "$SECRETS_FILE"
-
-
-
-
-# 检查是否在 Zellij 内部，并且 Zsh 没有被识别为交互式
-if [[ -n "$ZELLIJ" ]] && [[ ! -o interactive ]]; then
-    # 重新执行 Zsh，带上交互式标志
-    exec zsh -i
-fi
