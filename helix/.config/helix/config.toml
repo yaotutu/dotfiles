@@ -1,0 +1,38 @@
+# ~/.config/helix/config.toml
+
+# 你爱用主题可以自己改个名字，比如 "onedark" / "gruvbox"
+# theme = "onedark"
+
+[editor]
+line-number = "relative"      # 相对行号，看 diff 和跳转都舒服 [oai_citation:3‡docs.helix-editor.com](https://docs.helix-editor.com/configuration.html?utm_source=chatgpt.com)
+cursorline = true             # 高亮当前行，阅读代码更清晰
+gutters = ["diagnostics", "diff"]  # 开启诊断 + git diff 侧边栏 [oai_citation:4‡docs.helix-editor.com](https://docs.helix-editor.com/master/editor.html?utm_source=chatgpt.com)
+true-color = true             # 强制真彩（现代终端基本都支持）
+color-modes = true            # 模式显示彩色（normal/insert）
+
+[editor.indent-guides]
+render = true                 # 显示缩进线，方便看结构 [oai_citation:5‡rushter.com](https://rushter.com/blog/helix-editor/)
+
+# ==== 关键：把 Ctrl-s 映射成保存 ====
+[keys.normal]
+C-s = ":write"                # 官方示例里的写法，没问题 [oai_citation:6‡docs.helix-editor.com](https://docs.helix-editor.com/remapping.html)
+
+# ==== Space 前缀的小菜单（模仿 VSCode / Zed 的 Command 风格）====
+# Space 层：通用操作
+[keys.normal.space]
+# 文件/Buffer 相关
+f = "file_picker"                     # <space> f → 打开文件选择器 [oai_citation:7‡docs.helix-editor.com](https://docs.helix-editor.com/commands.html)
+b = "buffer_picker"                   # <space> b → 打开已打开文件列表 [oai_citation:8‡docs.helix-editor.com](https://docs.helix-editor.com/commands.html)
+q = ":quit"                           # <space> q → 退出当前窗口
+
+# ==== Space + g 层：Git 相关 ====
+[keys.normal.space.g]
+# 当前文件 diff：右侧开一个分屏展示 git diff
+d = [
+  ":vsplit-new",                      # 创建一个竖直分屏（scratch buffer） [oai_citation:9‡docs.helix-editor.com](https://docs.helix-editor.com/commands.html)
+  ":lang diff",                       # 把这个 buffer 的语言设为 diff 高亮 [oai_citation:10‡docs.helix-editor.com](https://docs.helix-editor.com/commands.html)
+  ":insert-output git diff -- {buffer_name}",  # 插入当前文件的 git diff 输出 [oai_citation:11‡docs.helix-editor.com](https://docs.helix-editor.com/commands.html)
+]
+
+# 当前光标所在 hunk 回滚到 git 版本（块级撤销）
+r = ":reset-diff-change"              # 官方命令名确认无误 [oai_citation:12‡docs.helix-editor.com](https://docs.helix-editor.com/commands.html)
