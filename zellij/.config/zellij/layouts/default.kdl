@@ -1,59 +1,88 @@
 layout {
     default_tab_template {
-        children
+        // --- 顶部状态栏：提示信息 (保持简洁) ---
         pane size=1 borderless=true {
-            plugin location="zjstatus" {
-                format_left   "{mode} {tabs}"
-                format_center ""
-                format_right  "{pipe_zjstatus_hints}{datetime}#[bg=#6e5fb7,fg=#ffffff,bold] {session} "
+            plugin location="https://github.com/dj95/zjstatus/releases/download/v0.20.2/zjstatus.wasm" {
+                format_left   ""
+                format_center "{pipe_zjstatus_hints}"
+                format_right  ""
+                format_space  ""
+                pipe_zjstatus_hints_format "{output}"
+                border_enabled  "false"
+                hide_frame_for_single_pane "true"
+            }
+        }
+
+        children
+
+        // --- 底部状态栏：Git, Mode (左) / Tabs (中) / Session, Time (右) ---
+        pane size=1 borderless=true {
+            plugin location="https://github.com/dj95/zjstatus/releases/download/v0.20.2/zjstatus.wasm" {
+                // 布局保持：[Git Block] -> [Mode Block]
+                // Powerline 链: Git 块背景色 #eed49f 传递给 Mode 块的箭头 
+                format_left   "#[bg=#eed49f,fg=#1e1e2e,bold]  {command_git_branch} #[fg=#eed49f]{mode}"
+                
+                // 布局保持：Tabs 移到中心
+                format_center "{tabs}" 
+                
+                // 布局保持：[Session Block] -> [Time Block]
+                // Powerline 链: Session 块背景色 #89b4fa 传递给 Time 块的箭头 
+                format_right  "#[fg=#89b4fa]#[bg=#89b4fa,fg=#1e1e2e,bold]  {session} #[fg=#f5bde6]#[bg=#f5bde6,fg=#1e1e2e,bold]  {datetime} "
                 format_space  ""
 
-                pipe_zjstatus_hints_format "{output}"
+                // 关键设置：分隔符必须为空，实现连续 Powerline 
+                tab_separator ""
 
-                border_enabled  "false"
-                border_char     "─"
-                border_format   "#[fg=#4C435C]{char}"
-                border_position "top"
+                // --- 模式指示器配色 (Powerline 箭头 ) ---
+                // 箭头前景 (fg) 必须等于模式块的背景 (bg)，以传递颜色给下一个区块 (Tabs)。
+                mode_normal        "#[bg=#a6e3a1,fg=#1e1e2e,bold] ⚡ NORMAL #[fg=#a6e3a1]" 
+                mode_locked        "#[bg=#6c7086,fg=#1e1e2e,bold]  LOCKED #[fg=#6c7086]" 
+                mode_resize        "#[bg=#f5bde6,fg=#1e1e2e,bold] ↕ RESIZE #[fg=#f5bde6]" 
+                mode_pane          "#[bg=#89b4fa,fg=#1e1e2e,bold] 舘 PANE #[fg=#89b4fa]" 
+                mode_tab           "#[bg=#b4befe,fg=#1e1e2e,bold]  TAB #[fg=#b4befe]" 
+                mode_scroll        "#[bg=#f9e2af,fg=#1e1e2e,bold]  SCROLL #[fg=#f9e2af]"
+                mode_enter_search  "#[bg=#8aadf4,fg=#1e1e2e,bold]  ENT-SEARCH #[fg=#8aadf4]"
+                mode_search        "#[bg=#8aadf4,fg=#1e1e2e,bold]  SEARCH #[fg=#8aadf4]"
+                mode_rename_tab    "#[bg=#b4befe,fg=#1e1e2e,bold]  RENAME-TAB #[fg=#b4befe]"
+                mode_rename_pane   "#[bg=#89b4fa,fg=#1e1e2e,bold] 舘 RENAME-PANE #[fg=#89b4fa]"
+                mode_session       "#[bg=#74c7ec,fg=#1e1e2e,bold]  SESSION #[fg=#74c7ec]"
+                mode_move          "#[bg=#f5c2e7,fg=#1e1e2e,bold]  MOVE #[fg=#f5c2e7]"
+                mode_prompt        "#[bg=#8aadf4,fg=#1e1e2e,bold]  PROMPT #[fg=#8aadf4]"
+                mode_tmux          "#[bg=#f5a97f,fg=#1e1e2e,bold]  TMUX #[fg=#f5a97f]"
 
-                hide_frame_for_single_pane "false"
+                // --- Git 配置 ---
+                command_git_branch_command     "git rev-parse --abbrev-ref HEAD"
+                command_git_branch_format      " {stdout} " 
+                command_git_branch_interval    "10"
+                command_git_branch_rendermode  "static"
+                
+                // --- 标签页样式 (关键优化：实现连续 Powerline 链) ---
+                // 1. 移除起始的  (它由前面的 Mode 块负责连接)。
+                // 2. 结尾  的前景 (fg) 设置为 Tab 的背景色 (bg)，以便连接下一个 Tab 或右侧的 Session 块。
+                
+                // 活跃 Tab (Active Tab) - 紫色
+                tab_active              "#[bg=#cba6f7,fg=#1e1e2e,bold]  {index} {name} #[fg=#cba6f7]" 
+                tab_active_fullscreen   "#[bg=#cba6f7,fg=#1e1e2e,bold] {fullscreen_indicator}  {index} {name} #[fg=#cba6f7]" 
+                tab_active_sync         "#[bg=#cba6f7,fg=#1e1e2e,bold] {sync_indicator}  {index} {name} #[fg=#cba6f7]" 
 
-                mode_locked      "#[bg=#6e5fb7,fg=#ffffff,bold] ❤ "
-                mode_normal      "#[bg=#aa87fe,fg=#3c01cd,bold] ❤ NORMAL "
-                mode_resize      "#[bg=#ff9969,fg=#7f3513,bold] ❤ RESIZE "
-                mode_pane        "#[bg=#9FFBB6,fg=#30563a,bold] ❤ PANE "
-                mode_move        "#[bg=#FFD896,fg=#905b00,bold] ❤ MOVE "
-                mode_tab         "#[bg=#80BDFF,fg=#0051a8,bold] ❤ TAB "
-                mode_scroll      "#[bg=#412da2,fg=#c9c0ff,bold] ❤ SCROLL "
-                mode_search      "#[bg=#e28e00,fg=#ffe9c4,bold] ❤ SEARCH "
-                mode_entersearch "#[bg=#e28e00,fg=#ffe9c4,bold] ❤ ENTER SEARCH "
-                mode_renametab   "#[bg=#0051a8,fg=#80BDFF,bold] ❤ RENAME TAB "
-                mode_renamepane  "#[bg=#30563a,fg=#9FFBB6,bold] ❤ RENAME PANE "
-                mode_session     "#[bg=#FF87A5,fg=#7d001f,bold] ❤ SESSION "
-                mode_tmux        "#[bg=#c9c0ff,fg=#412da2,bold] ❤ TMUX "
+                // 非活跃 Tab (Normal Tab) - 灰色，前景使用更亮的 #b4befe 提高可读性
+                tab_normal              "#[bg=#5c5f77,fg=#b4befe]  {index} {name} #[fg=#5c5f77]" 
+                tab_normal_fullscreen   "#[bg=#5c5f77,fg=#b4befe] {fullscreen_indicator}  {index} {name} #[fg=#5c5f77]" 
+                tab_normal_sync         "#[bg=#5c5f77,fg=#b4befe] {sync_indicator}  {index} {name} #[fg=#5c5f77]"
 
-                tab_active              "#[bg=#9c73fe,fg=#f2ecff,bold] {index} {name} "
-                tab_active_fullscreen   "#[bg=#9c73fe,fg=#f2ecff,bold] {fullscreen_indicator} {index} {name} "
-                tab_active_sync         "#[bg=#9c73fe,fg=#f2ecff,bold] {sync_indicator} {index} {name} "
-
-                tab_normal              "#[fg=#7a6c94,bold] {index} {name} "
-                tab_normal_fullscreen   "#[fg=#7a6c94,bold] {fullscreen_indicator} {index} {name} "
-                tab_normal_sync         "#[fg=#7a6c94,bold] {sync_indicator} {index} {name} "
-
-                tab_separator " "
-
+                // --- 时间配置 ---
+                datetime        "{format}"
+                datetime_format "%m-%d %H:%M"
+                datetime_timezone "Asia/Shanghai"
+                
+                // --- 其他保持不变 ---
+                tab_rename              "#[bg=#80BDFF,fg=#0051a8,bold] {index} {name} {floating_indicator} "
                 tab_sync_indicator       "󰓦"
                 tab_fullscreen_indicator "󰊓"
                 tab_floating_indicator   "⬚"
-
-                tab_rename              "#[bg=#80BDFF,fg=#0051a8,bold] {index} {name} {floating_indicator} "
-
                 tab_display_count         "9"
                 tab_truncate_start_format "#[fg=#FFD080]  +{count}  "
                 tab_truncate_end_format   "#[fg=#FFD080]   +{count} "
-
-                datetime        "#[fg=#7a6c94,bold] {format} "
-                datetime_format "%H:%M:%S"
-                datetime_timezone "America/Los_Angeles"
             }
         }
     }
