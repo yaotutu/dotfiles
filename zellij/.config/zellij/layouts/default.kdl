@@ -1,53 +1,61 @@
 layout {
     default_tab_template {
-        pane size=1 borderless=true {
-        plugin location="zellij:compact-bar"
-    }
-        pane size=2 borderless=true {
-        plugin location="zellij:status-bar"
-        }
         children
         pane size=1 borderless=true {
-            plugin location="https://github.com/dj95/zjstatus/releases/latest/download/zjstatus.wasm" {
-                format_left   "{mode} #[fg=#89B4FA,bold]{session}"
-                format_center "{tabs}"
-                format_right  "{command_git_branch} {datetime}"
+            plugin location="zjstatus" {
+                format_left   "{mode} {tabs}"
+                format_center ""
+                format_right  "{pipe_zjstatus_hints}{datetime}#[bg=#6e5fb7,fg=#ffffff,bold] {session} "
                 format_space  ""
+
+                pipe_zjstatus_hints_format "{output}"
 
                 border_enabled  "false"
                 border_char     "─"
-                border_format   "#[fg=#6C7086]{char}"
+                border_format   "#[fg=#4C435C]{char}"
                 border_position "top"
 
-                hide_frame_for_single_pane "true"
+                hide_frame_for_single_pane "false"
 
-                mode_normal        "#[bg=#89B4FA,fg=#1E1E2E,bold] NORMAL "
-                mode_locked        "#[bg=#F38BA8,fg=#1E1E2E,bold] LOCKED "
-                mode_resize        "#[bg=#FAB387,fg=#1E1E2E,bold] RESIZE "
-                mode_pane          "#[bg=#A6E3A1,fg=#1E1E2E,bold] PANE "
-                mode_tab           "#[bg=#F9E2AF,fg=#1E1E2E,bold] TAB "
-                mode_scroll        "#[bg=#CBA6F7,fg=#1E1E2E,bold] SCROLL "
-                mode_enter_search  "#[bg=#94E2D5,fg=#1E1E2E,bold] SEARCH "
-                mode_search        "#[bg=#94E2D5,fg=#1E1E2E,bold] SEARCH "
-                mode_session       "#[bg=#F5C2E7,fg=#1E1E2E,bold] SESSION "
-                mode_move          "#[bg=#FAE3B0,fg=#1E1E2E,bold] MOVE "
-                mode_prompt        "#[bg=#F5E0DC,fg=#1E1E2E,bold] PROMPT "
-                mode_tmux          "#[bg=#FFC387,fg=#1E1E2E,bold] TMUX "
+                mode_locked      "#[bg=#6e5fb7,fg=#ffffff,bold] ❤ "
+                mode_normal      "#[bg=#aa87fe,fg=#3c01cd,bold] ❤ NORMAL "
+                mode_resize      "#[bg=#ff9969,fg=#7f3513,bold] ❤ RESIZE "
+                mode_pane        "#[bg=#9FFBB6,fg=#30563a,bold] ❤ PANE "
+                mode_move        "#[bg=#FFD896,fg=#905b00,bold] ❤ MOVE "
+                mode_tab         "#[bg=#80BDFF,fg=#0051a8,bold] ❤ TAB "
+                mode_scroll      "#[bg=#412da2,fg=#c9c0ff,bold] ❤ SCROLL "
+                mode_search      "#[bg=#e28e00,fg=#ffe9c4,bold] ❤ SEARCH "
+                mode_entersearch "#[bg=#e28e00,fg=#ffe9c4,bold] ❤ ENTER SEARCH "
+                mode_renametab   "#[bg=#0051a8,fg=#80BDFF,bold] ❤ RENAME TAB "
+                mode_renamepane  "#[bg=#30563a,fg=#9FFBB6,bold] ❤ RENAME PANE "
+                mode_session     "#[bg=#FF87A5,fg=#7d001f,bold] ❤ SESSION "
+                mode_tmux        "#[bg=#c9c0ff,fg=#412da2,bold] ❤ TMUX "
 
-                tab_normal   "#[fg=#6C7086] {name} "
-                tab_active   "#[fg=#9399B2,bold,italic] {name} "
+                tab_active              "#[bg=#9c73fe,fg=#f2ecff,bold] {index} {name} "
+                tab_active_fullscreen   "#[bg=#9c73fe,fg=#f2ecff,bold] {fullscreen_indicator} {index} {name} "
+                tab_active_sync         "#[bg=#9c73fe,fg=#f2ecff,bold] {sync_indicator} {index} {name} "
 
-                command_git_branch_command     "git rev-parse --abbrev-ref HEAD"
-                command_git_branch_format      "#[fg=blue] {stdout} "
-                command_git_branch_interval    "10"
-                command_git_branch_rendermode  "static"
+                tab_normal              "#[fg=#7a6c94,bold] {index} {name} "
+                tab_normal_fullscreen   "#[fg=#7a6c94,bold] {fullscreen_indicator} {index} {name} "
+                tab_normal_sync         "#[fg=#7a6c94,bold] {sync_indicator} {index} {name} "
 
-                datetime        "#[fg=#6C7086,bold] {format} "
-                datetime_format "%A, %d %b %Y %H:%M"
-                datetime_timezone "Asia/Shanghai"
+                tab_separator " "
+
+                tab_sync_indicator       "󰓦"
+                tab_fullscreen_indicator "󰊓"
+                tab_floating_indicator   "⬚"
+
+                tab_rename              "#[bg=#80BDFF,fg=#0051a8,bold] {index} {name} {floating_indicator} "
+
+                tab_display_count         "9"
+                tab_truncate_start_format "#[fg=#FFD080]  +{count}  "
+                tab_truncate_end_format   "#[fg=#FFD080]   +{count} "
+
+                datetime        "#[fg=#7a6c94,bold] {format} "
+                datetime_format "%H:%M:%S"
+                datetime_timezone "America/Los_Angeles"
             }
         }
-        
-
     }
+    tab name=""
 }

@@ -9,27 +9,27 @@ default_layout "default"
 
 keybinds clear-defaults=true {
     pane {
-        bind "Ctrl p" { SwitchToMode "Normal"; }
-        bind "h" "Left" { MoveFocus "Left"; }
-        bind "l" "Right" { MoveFocus "Right"; }
-        bind "j" "Down" { MoveFocus "Down"; }
-        bind "k" "Up" { MoveFocus "Up"; }
-        bind "p" { SwitchFocus; }
-        bind "n" { NewPane; SwitchToMode "Normal"; }
-        bind "d" { NewPane "Down"; SwitchToMode "Normal"; }
-        bind "r" { NewPane "Right"; SwitchToMode "Normal"; }
-        bind "s" { NewPane "stacked"; SwitchToMode "Normal"; }
-        bind "x" { CloseFocus; SwitchToMode "Normal"; }
-        bind "f" { ToggleFocusFullscreen; SwitchToMode "Normal"; }
-        bind "z" { TogglePaneFrames; SwitchToMode "Normal"; }
-        bind "w" { ToggleFloatingPanes; SwitchToMode "Normal"; }
-        bind "e" { TogglePaneEmbedOrFloating; SwitchToMode "Normal"; }
+        // 优化 1：移除冗余的 Esc 退出键，它由底部的 shared_except 块处理。
+        // bind "Esc" { SwitchToMode "Normal"; } // 已移除
+        
+        // 优化 2：移除所有操作后的 "SwitchToMode "Normal";"，以保持在 Pane 模式，方便连续操作。
+        bind "n" { NewPane; }
+        bind "Down" { NewPane "Down"; }
+        bind "Right" { NewPane "Right"; }
+        bind "s" { NewPane "stacked"; }
+        bind "x" { CloseFocus; }
+        bind "f" { ToggleFocusFullscreen; }
+        bind "g" { NewTab; MovePane "Right"; } // 定制的 "全屏到新 Tab" 功能
+        bind "z" { TogglePaneFrames; }
+        bind "w" { ToggleFloatingPanes; }
+        bind "e" { TogglePaneEmbedOrFloating; }
         bind "c" { SwitchToMode "RenamePane"; PaneNameInput 0;}
-        bind "i" { TogglePanePinned; SwitchToMode "Normal"; }
+        bind "i" { TogglePanePinned; }
     }
 
     resize {
-        bind "Ctrl n" { SwitchToMode "Normal"; }
+        // 优化 1：移除冗余的 Esc 退出键。
+        // bind "Esc" { SwitchToMode "Normal"; } // 已移除
         bind "h" "Left" { Resize "Increase Left"; }
         bind "j" "Down" { Resize "Increase Down"; }
         bind "k" "Up" { Resize "Increase Up"; }
@@ -43,7 +43,8 @@ keybinds clear-defaults=true {
     }
 
     tab {
-        bind "Ctrl t" { SwitchToMode "Normal"; }
+        // 优化 1：移除冗余的 Esc 退出键。
+        // bind "Esc" { SwitchToMode "Normal"; } // 已移除
         bind "r" { SwitchToMode "RenameTab"; TabNameInput 0; }
         bind "h" "Left" "Up" "k" { GoToPreviousTab; }
         bind "l" "Right" "Down" "j" { GoToNextTab; }
@@ -78,7 +79,7 @@ keybinds clear-defaults=true {
         bind "Alt l" "Alt Right" { MoveFocusOrTab "Right"; }
         bind "Alt j" "Alt Down" { MoveFocus "Down"; }
         bind "Alt k" "Alt Up" { MoveFocus "Up"; }
-        bind "Alt w" "Alt Up" { CloseFocus; }
+        bind "Alt x" { CloseFocus; } // 优化 3：将 Alt w 变更为 Alt x
 
         bind "Alt =" "Alt +" { Resize "Increase"; }
         bind "Alt -" { Resize "Decrease"; }
@@ -97,7 +98,8 @@ keybinds clear-defaults=true {
         bind "Alt 8" { GoToTab 8; SwitchToMode "Normal"; }
         bind "Alt 9" { GoToTab 9; SwitchToMode "Normal"; }
     }
-        shared_except "normal" "locked" {
+    shared_except "normal" "locked" {
+        // 此处逻辑已统一所有模式 (除了 normal/locked) 的 Esc/Enter 退出
         bind "Enter" "Esc" { SwitchToMode "Normal"; }
     }
     shared_except "pane" "locked" {
@@ -119,3 +121,41 @@ keybinds clear-defaults=true {
         bind "Ctrl h" { SwitchToMode "Move"; }
     }
 }
+
+
+
+plugins {
+    // Built-in
+    about location="zellij:about"
+    compact-bar location="zellij:compact-bar"
+    configuration location="zellij:configuration"
+    filepicker location="zellij:strider" {
+        cwd "/"
+    }
+    plugin-manager location="zellij:plugin-manager"
+    session-manager location="zellij:session-manager"
+    strider location="zellij:strider"
+    welcome-screen location="zellij:session-manager" {
+        welcome_screen true
+    }
+
+    // User
+    zj-quit location="https://github.com/cristiand391/zj-quit/releases/download/0.3.1/zj-quit.wasm" {
+        confirm_key "y"
+        cancel_key "Esc"
+    }
+    zj-forgot location="https://github.com/karimould/zellij-forgot/releases/download/0.4.2/zellij_forgot.wasm"
+    zjstatus location="https://github.com/dj95/zjstatus/releases/download/v0.20.2/zjstatus.wasm"
+    zjstatus-hints location="https://github.com/b0o/zjstatus-hints/releases/latest/download/zjstatus-hints.wasm" {
+        max_length "0"
+        overflow_str ""
+        pipe_name "zjstatus_hints"
+        hide_on_mode_change "true"
+    }
+}
+
+load_plugins {
+    zjstatus-hints
+}
+
+show_startup_tips false
