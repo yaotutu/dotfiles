@@ -2,12 +2,18 @@
 
 // 基础设置
 default_layout "default"
+default_mode "locked" // ⭐ 新增：默认启动进入 locked 模式
 
 // 取消注释以设置固定会话名
 // default_session_name "main"
 
 
 keybinds clear-defaults=true {
+    // ⭐ 新增：locked 模式只保留一个解锁快捷键
+    locked {
+        bind "Ctrl a" { SwitchToMode "Normal"; }
+    }
+
     pane {
         bind "n" { NewPane; }
         bind "s" { NewPane "stacked"; }
@@ -88,9 +94,13 @@ keybinds clear-defaults=true {
         bind "Alt 8" { GoToTab 8; SwitchToMode "Normal"; }
         bind "Alt 9" { GoToTab 9; SwitchToMode "Normal"; }
     }
-    shared_except "normal" "locked" {
-        bind "Enter" "Esc" { SwitchToMode "Normal"; }
+
+    // ⭐ 修改点：从「所有非 normal/locked」→「所有非 locked」
+    // 且退出时切到 Locked 而不是 Normal
+    shared_except "locked" {
+        bind "Enter" "Esc" { SwitchToMode "Locked"; }
     }
+
     shared_except "pane" "locked" {
         bind "Ctrl p" { SwitchToMode "Pane"; }
     }

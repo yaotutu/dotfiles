@@ -3,15 +3,17 @@
 # 你爱用主题可以自己改个名字，比如 "onedark" / "gruvbox"
 # theme = "onedark"
 
+theme = "macchiato"
 [editor]
-line-number = "relative"      # 相对行号，看 diff 和跳转都舒服 [oai_citation:3‡docs.helix-editor.com](https://docs.helix-editor.com/configuration.html?utm_source=chatgpt.com)
+line-number = "absolute"      # 相对行号，看 diff 和跳转都舒服 [oai_citation:3‡docs.helix-editor.com](https://docs.helix-editor.com/configuration.html?utm_source=chatgpt.com)
 cursorline = true             # 高亮当前行，阅读代码更清晰
-gutters = ["diagnostics", "diff"]  # 开启诊断 + git diff 侧边栏 [oai_citation:4‡docs.helix-editor.com](https://docs.helix-editor.com/master/editor.html?utm_source=chatgpt.com)
+gutters = ["diagnostics", "diff","line-numbers"]  # 开启诊断 + git diff 侧边栏 [oai_citation:4‡docs.helix-editor.com](https://docs.helix-editor.com/master/editor.html?utm_source=chatgpt.com)
 true-color = true             # 强制真彩（现代终端基本都支持）
 color-modes = true            # 模式显示彩色（normal/insert）
 
 [editor.indent-guides]
 render = true                 # 显示缩进线，方便看结构 [oai_citation:5‡rushter.com](https://rushter.com/blog/helix-editor/)
+
 
 # ==== 关键：把 Ctrl-s 映射成保存 ====
 [keys.normal]
