@@ -1,3 +1,4 @@
 zsh/.config/zsh/secrets.sh
 zsh/.config/zsh/scripts/.secret_password
+zsh/.config/zsh/*.local.zsh
 .claude/settings.local.json
