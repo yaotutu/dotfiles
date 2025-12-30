@@ -5,9 +5,10 @@
 # 1. PATH & 工具初始化
 source "$HOME/.config/zsh/paths.zsh"
 
-# 1.1. 机器特定配置（如果存在）
-HOST_LOCAL_FILE="$HOME/.config/zsh/$(hostname).local.zsh"
-[[ -f "$HOST_LOCAL_FILE" ]] && source "$HOST_LOCAL_FILE"
+
+# 1.1. 机器特定配置（本地入口，不依赖 hostname）
+LOCAL_ENTRY="$HOME/.config/zsh/host.local.zsh"
+[[ -r "$LOCAL_ENTRY" ]] && source "$LOCAL_ENTRY"
 
 # 2. Zinit 插件系统加载
 source "$HOME/.config/zsh/zinit.zsh"
