@@ -1,0 +1,14 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(alacritty:*)",
+      "Bash(brew install:*)",
+      "Bash(zellij setup:*)",
+      "Bash(timeout:*)",
+      "Bash(zellij --help:*)",
+      "Bash(/opt/homebrew/bin/zellij attach:*)"
+    ],
+    "deny": [],
+    "ask": []
+  }
+}
