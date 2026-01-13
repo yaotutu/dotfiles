@@ -18,3 +18,9 @@ source "$HOME/.config/zsh/zinit.zsh"
 
 # 4. 加载自定义配置和函数
 [[ -r "$HOME/.config/zsh/functions.zsh" ]] && source "$HOME/.config/zsh/functions.zsh"
+
+# 5. 通用 alias（建议独立文件）
+[[ -r "$HOME/.config/zsh/aliases.zsh" ]] && source "$HOME/.config/zsh/aliases.zsh"
+
+# 6. 键位绑定（务必放最后，防止插件覆盖）
+[[ -r "$HOME/.config/zsh/keybindings.zsh" ]] && source "$HOME/.config/zsh/keybindings.zsh"

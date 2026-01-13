@@ -47,11 +47,11 @@ return {
    window_close_confirmation = 'NeverPrompt',
    window_frame = {
       active_titlebar_bg = '#090909',
+      border_left_width = '2px',
+      border_right_width = '2px',
+      border_top_height = '2px',
+      border_bottom_height = '2px',
       -- font = fonts.font,
       -- font_size = fonts.font_size,
-   },
-   inactive_pane_hsb = {
-      saturation = 0.9,
-      brightness = 0.65,
    },
 }

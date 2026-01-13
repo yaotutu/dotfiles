@@ -86,7 +86,12 @@ local colorscheme = {
       [17] = mocha.rosewater,
    },
    scrollbar_thumb = mocha.surface2,
-   split = mocha.overlay0,
+   split = mocha.lavender,
+   -- 分隔符颜色
+   -- pane 背景色区分
+   pane = mocha.base,
+   active_pane_background = mocha.base,
+   inactive_pane_background = mocha.mantle,
    compose_cursor = mocha.flamingo, -- nightbuild only
 }
 
