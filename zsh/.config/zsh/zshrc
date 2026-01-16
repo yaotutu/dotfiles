@@ -24,3 +24,24 @@ source "$HOME/.config/zsh/zinit.zsh"
 
 # 6. 键位绑定（务必放最后，防止插件覆盖）
 [[ -r "$HOME/.config/zsh/keybindings.zsh" ]] && source "$HOME/.config/zsh/keybindings.zsh"
+
+
+
+# ===== Shared history across all zsh sessions =====
+export HISTFILE="$HOME/.zsh_history"
+export HISTSIZE=200000
+export SAVEHIST=200000
+
+setopt APPEND_HISTORY          # 追加写历史（不覆盖）
+setopt INC_APPEND_HISTORY      # 每条命令执行后立刻写入历史文件
+setopt SHARE_HISTORY           # 所有会话共享历史（会读入其他会话的新增历史）
+
+# ===== Optional: make history nicer (recommended) =====
+setopt EXTENDED_HISTORY        # 记录时间戳等信息
+setopt HIST_IGNORE_ALL_DUPS    # 历史里去重（更强）
+setopt HIST_SAVE_NO_DUPS       # 写入历史文件时也去重
+setopt HIST_REDUCE_BLANKS      # 去掉多余空格
+setopt HIST_VERIFY             # 历史展开（!等）先显示再执行，防手滑
+
+# （可选）多会话同时写历史时更稳一点（不同系统/版本支持不同）
+setopt HIST_FCNTL_LOCK 2>/dev/null
