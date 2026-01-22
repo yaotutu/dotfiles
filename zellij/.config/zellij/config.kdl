@@ -1,7 +1,7 @@
 // Zellij 配置文件
 
 // 基础设置
-default_layout "default"
+// default_layout "default"  // 禁用默认布局文件，启用 swap layout 功能
 default_mode "locked" // ⭐ 新增：默认启动进入 locked 模式
 
 // 1) 鼠标模式：开（方便滚轮看输出）
@@ -10,7 +10,7 @@ mouse_mode true
 
 // 2) 复制：强制走系统剪贴板（mac 用 pbcopy）
 // 这样就算终端对 OSC52 支持不好，也能稳定复制到 mac 剪贴板
-copy_command "pbcopy"
+// copy_command "pbcopy"
 
 // 3) 松开鼠标就自动复制（可选，但一般更爽）
 copy_on_select true
