@@ -77,5 +77,16 @@ layout {
             }
         }
     }
-    tab name=""
+    tab name="" {
+    pane;
+    }
+    tab name="" {
+    pane;
+    }
+    tab name="󰆍" {
+    pane;
+    }
+    tab name="󰊢" {
+    pane;
+    }
 }

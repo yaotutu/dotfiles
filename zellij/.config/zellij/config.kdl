@@ -22,11 +22,22 @@ keybinds clear-defaults=true {
     // ⭐ 新增：locked 模式只保留一个解锁快捷键
     locked {
         bind "Ctrl a" { SwitchToMode "Normal"; }
+        bind "Alt 1" { GoToTab 1; }
+        bind "Alt 2" { GoToTab 2; }
+        bind "Alt 3" { GoToTab 3; }
+        bind "Alt 4" { GoToTab 4; }
+        bind "Alt 5" { GoToTab 5; }
+        bind "Alt 6" { GoToTab 6; }
+        bind "Alt 7" { GoToTab 7; }
+        bind "Alt 8" { GoToTab 8; }
+        bind "Alt 9" { GoToTab 9; }
     }
 
     pane {
         bind "n" { NewPane; }
-        bind "s" { NewPane "stacked"; }
+        // bind "s" { NewPane "stacked"; }
+        bind "n" { NewPane "Right"; SwitchToMode "Locked"; }
+        bind "N" { NewPane "Down"; SwitchToMode "Locked"; }
         bind "x" { CloseFocus; }
         bind "f" { ToggleFocusFullscreen; }
         bind "g" { NewTab; MovePane "Right"; } // 定制的 "全屏到新 Tab" 功能
