@@ -91,30 +91,6 @@ function BackDrops:random(window)
    end
 end
 
----Cycle the loaded `files` and select the next background
----@param window any WezTerm `Window` see: https://wezfurlong.org/wezterm/config/lua/window/index.html
-function BackDrops:cycle_forward(window)
-   if self.current_idx == #self.files then
-      self.current_idx = 1
-   else
-      self.current_idx = self.current_idx + 1
-   end
-   wezterm.GLOBAL.background = self.files[self.current_idx]
-   self:_set_opt(window)
-end
-
----Cycle the loaded `files` and select the previous background
----@param window any WezTerm `Window` see: https://wezfurlong.org/wezterm/config/lua/window/index.html
-function BackDrops:cycle_back(window)
-   if self.current_idx == 1 then
-      self.current_idx = #self.files
-   else
-      self.current_idx = self.current_idx - 1
-   end
-   wezterm.GLOBAL.background = self.files[self.current_idx]
-   self:_set_opt(window)
-end
-
 ---Set a specific background from the `files` array
 ---@param window any WezTerm `Window` see: https://wezfurlong.org/wezterm/config/lua/window/index.html
 ---@param idx number index of the `files` array

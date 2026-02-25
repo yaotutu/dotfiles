@@ -51,7 +51,5 @@ return {
       border_right_width = '2px',
       border_top_height = '2px',
       border_bottom_height = '2px',
-      -- font = fonts.font,
-      -- font_size = fonts.font_size,
    },
 }

@@ -22,13 +22,6 @@ if platform.is_win then
    }
 elseif platform.is_mac then
    options.default_prog = { 'zsh', '-l' }
-   -- 如果需要本地 shell 菜单可以解开这里
-   -- options.launch_menu = {
-   --   { label = 'Bash',    args = { 'bash', '-l' } },
-   --   { label = 'Fish',    args = { '/opt/homebrew/bin/fish', '-l' } },
-   --   { label = 'Nushell', args = { '/opt/homebrew/bin/nu', '-l' } },
-   --   { label = 'Zsh',     args = { 'zsh', '-l' } },
-   -- }
 elseif platform.is_linux then
    options.default_prog = { 'fish', '-l' }
    options.launch_menu = {
@@ -42,7 +35,7 @@ end
 
 local ssh_cmd = { 'ssh' }
 
-if wezterm.target_triple == 'x86_64-pc-windows-msvc' then
+if platform.is_win then
    ssh_cmd = { 'powershell.exe', 'ssh' }
 end
 

@@ -39,7 +39,6 @@ local keys = {
    -- tabs --
    -- tabs: spawn+close
    { key = 't',     mods = mod.SUPER,     action = act.SpawnTab('DefaultDomain') },
-   -- { key = 't', mods = mod.SUPER_REV, action = act.SpawnTab({ DomainName = 'WSL:Ubuntu' }) },
    { key = 'w',     mods = mod.SUPER_REV, action = act.CloseCurrentTab({ confirm = false }) },
 
    -- tabs: navigation
@@ -113,47 +112,6 @@ local keys = {
       mods = mod.SUPER_REV,
       action = act.PaneSelect({ alphabet = '1234567890', mode = 'SwapWithActiveKeepFocus' }),
    },
-
-   -- key-tables --
-   -- resizes fonts
-   {
-      key = 'f',
-      mods = 'LEADER',
-      action = act.ActivateKeyTable({
-         name = 'resize_font',
-         one_shot = false,
-         timemout_miliseconds = 1000,
-      }),
-   },
-   -- resize panes
-   {
-      key = 'p',
-      mods = 'LEADER',
-      action = act.ActivateKeyTable({
-         name = 'resize_pane',
-         one_shot = false,
-         timemout_miliseconds = 1000,
-      }),
-   },
-}
-
--- stylua: ignore
-local key_tables = {
-   resize_font = {
-      { key = 'k',      action = act.IncreaseFontSize },
-      { key = 'j',      action = act.DecreaseFontSize },
-      { key = 'r',      action = act.ResetFontSize },
-      { key = 'Escape', action = 'PopKeyTable' },
-      { key = 'q',      action = 'PopKeyTable' },
-   },
-   resize_pane = {
-      { key = 'k',      action = act.AdjustPaneSize({ 'Up', 1 }) },
-      { key = 'j',      action = act.AdjustPaneSize({ 'Down', 1 }) },
-      { key = 'h',      action = act.AdjustPaneSize({ 'Left', 1 }) },
-      { key = 'l',      action = act.AdjustPaneSize({ 'Right', 1 }) },
-      { key = 'Escape', action = 'PopKeyTable' },
-      { key = 'q',      action = 'PopKeyTable' },
-   },
 }
 
 local mouse_bindings = {
@@ -167,8 +125,6 @@ local mouse_bindings = {
 
 return {
    disable_default_key_bindings = true,
-   -- leader = { key = 'a', mods = 'CTRL' },
    keys = keys,
-   key_tables = key_tables,
    mouse_bindings = mouse_bindings,
 }

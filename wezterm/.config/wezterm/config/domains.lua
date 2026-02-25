@@ -1,5 +1,4 @@
 return {
-  -- ssh_backend = "LibSsh",
   ssh_domains = {
     {
       name = "nvidia",
