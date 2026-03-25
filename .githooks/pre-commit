@@ -1,0 +1,54 @@
+#!/bin/bash
+# Git pre-commit 钩子：自动加密 secrets.sh 变更
+# 对比 secrets.sh 的 hash 和存储的 hash，如果不同则重新加密
+
+SECRETS_DIR="zsh/.config/zsh"
+SECRETS_FILE="$SECRETS_DIR/secrets.sh"
+SECRETS_ENC="$SECRETS_DIR/secrets.enc"
+SECRETS_HASH="$SECRETS_DIR/.secrets.hash"
+MANAGE_SCRIPT="$SECRETS_DIR/scripts/manage_secrets.sh"
+
+# 检查必要文件是否存在
+if [[ ! -f "$MANAGE_SCRIPT" ]]; then
+    echo "警告：密钥管理脚本不存在: $MANAGE_SCRIPT"
+    exit 0
+fi
+
+if [[ ! -f "$SECRETS_FILE" ]]; then
+    # secrets.sh 不存在，跳过（可能是新机器还没解密）
+    exit 0
+fi
+
+# 如果没有 hash 文件，说明需要初始化或解密
+if [[ ! -f "$SECRETS_HASH" ]]; then
+    echo "⚠️  未找到 .secrets.hash，跳过自动加密"
+    echo "   如果刚解密，请确保 manage_secrets.sh 解密时生成了 hash 文件"
+    exit 0
+fi
+
+# 计算当前 secrets.sh 的 hash
+CURRENT_HASH=$(sed 's/[[:space:]]*$//' "$SECRETS_FILE" | shasum -a 256 | cut -d' ' -f1)
+STORED_HASH=$(cat "$SECRETS_HASH")
+
+# 对比 hash
+if [[ "$CURRENT_HASH" == "$STORED_HASH" ]]; then
+    # hash 相同，内容没变，跳过
+    exit 0
+fi
+
+# hash 不同，说明 secrets.sh 被修改了，需要重新加密
+echo "检测到 secrets.sh 内容有变化，正在加密..."
+bash "$MANAGE_SCRIPT"
+
+# 检查加密是否成功
+if [[ ! -f "$SECRETS_ENC" ]]; then
+    echo "错误：加密失败，$SECRETS_ENC 不存在"
+    exit 1
+fi
+
+# 将更新后的文件添加到暂存区
+git add "$SECRETS_ENC"
+git add "$SECRETS_HASH"
+echo "已更新并暂存 $SECRETS_ENC 和 $SECRETS_HASH"
+
+exit 0

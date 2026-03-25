@@ -6,6 +6,18 @@ DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 SECRET="$DIR/../secrets.sh"
 ENC="$DIR/../secrets.enc"
 PASSFILE="$DIR/.secret_password"
+HASHFILE="$DIR/../.secrets.hash"
+
+# 计算 secrets.sh 的 hash（只取内容，忽略末尾空行差异）
+compute_hash() {
+  sed 's/[[:space:]]*$//' "$SECRET" | shasum -a 256 | cut -d' ' -f1
+}
+
+# 保存当前 hash 到文件
+save_hash() {
+  compute_hash > "$HASHFILE"
+  echo "📝 Hash 已保存到: $HASHFILE"
+}
 
 # 1) 保存密码（本机一次）
 ensure_password() {
@@ -29,10 +41,14 @@ encrypt() {
     exit 1
   fi
 
-  # 如果已有 enc 且比 secrets.sh 新，就认为没变化
-  if [[ -f "$ENC" && "$SECRET" -ot "$ENC" ]]; then
-    echo "⚡ secrets.sh 无变化，跳过加密"
-    return 0
+  # 检查 hash 是否有变化（如果有 hash 文件的话）
+  if [[ -f "$HASHFILE" ]]; then
+    CURRENT_HASH=$(compute_hash)
+    STORED_HASH=$(cat "$HASHFILE")
+    if [[ "$CURRENT_HASH" == "$STORED_HASH" ]]; then
+      echo "⚡ secrets.sh 内容无变化，跳过加密"
+      return 0
+    fi
   fi
 
   echo "🔄 删除旧加密文件（如果有）..."
@@ -41,6 +57,9 @@ encrypt() {
   echo "🔐 加密 secrets.sh → secrets.enc ..."
   openssl enc -aes-256-cbc -salt -pbkdf2 \
     -in "$SECRET" -out "$ENC" -pass pass:"$PASSWORD"
+
+  # 加密成功后保存 hash
+  save_hash
 
   echo "✅ 加密完成：$ENC 已更新"
 }
@@ -70,6 +89,9 @@ decrypt() {
     rm -f "$SECRET"
     exit 1
   fi
+
+  # 解密成功后保存 hash，这样后续提交时不会误触发加密
+  save_hash
 
   echo "✅ 解密完成：$SECRET 已生成"
 }
