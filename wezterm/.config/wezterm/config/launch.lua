@@ -6,21 +6,9 @@ local options = {
    launch_menu = {},
 }
 
--- 1. 按平台设置 default_prog 和本地 launch_menu -------------------------
+-- 根据平台设置默认 shell -------------------------
 
-if platform.is_win then
-   options.default_prog = { 'pwsh' }
-   options.launch_menu = {
-      { label = 'PowerShell Core',    args = { 'pwsh' } },
-      { label = 'PowerShell Desktop', args = { 'powershell' } },
-      { label = 'Command Prompt',     args = { 'cmd' } },
-      { label = 'Nushell',            args = { 'nu' } },
-      {
-         label = 'Git Bash',
-         args = { 'C:\\Users\\kevin\\scoop\\apps\\git\\current\\bin\\bash.exe' },
-      },
-   }
-elseif platform.is_mac then
+if platform.is_mac then
    options.default_prog = { 'zsh', '-l' }
 elseif platform.is_linux then
    options.default_prog = { 'fish', '-l' }
@@ -31,13 +19,7 @@ elseif platform.is_linux then
    }
 end
 
--- 2. 从 ~/.ssh/config 读取 Host，生成“普通 ssh”菜单 -----------------------
-
-local ssh_cmd = { 'ssh' }
-
-if platform.is_win then
-   ssh_cmd = { 'powershell.exe', 'ssh' }
-end
+-- 从 ~/.ssh/config 读取 Host，生成 SSH 菜单 -----------------------
 
 local ssh_config_file = wezterm.home_dir .. '/.ssh/config'
 local f = io.open(ssh_config_file)
@@ -49,23 +31,11 @@ if f then
          local host = line:gsub('Host ', ''):gsub('%s+', '')
          -- 跳过空 Host / 通配符
          if host ~= '' and host ~= '*' then
-            -- 拷贝 ssh_cmd
-            local args = {}
-            for i, v in ipairs(ssh_cmd) do
-               args[i] = v
-            end
-            args[#args + 1] = host
-
             -- 普通 ssh 菜单：SSH <host>
             table.insert(options.launch_menu, {
                label = 'SSH ' .. host,
-               args = args,
+               args = { 'ssh', host },
             })
-
-            -- 默认打开 vm
-            if host == 'vm' then
-               options.default_prog = args
-            end
          end
       end
       line = f:read('*l')
@@ -73,31 +43,14 @@ if f then
    f:close()
 end
 
--- 3. 基于 ssh_domains 生成 “SSH <name> (mux)” 菜单（当前窗口开远程 tab） --
+-- 基于 ssh_domains 生成 "SSH <name> (mux)" 菜单（WezTerm 多路复用）--
 
--- 这里假设你有 config/domains.lua，返回类似：
--- return {
---   ssh_backend = 'LibSsh',
---   ssh_domains = {
---     {
---       name = 'nvidia',
---       remote_address = '192.168.110.239',
---       username = 'yaotutu',
---       multiplexing = 'WezTerm',
---       remote_wezterm_path = '/usr/bin/wezterm',
---       assume_shell = 'Posix',
---     },
---   },
--- }
 local ok, domains_mod = pcall(require, 'config.domains')
 if ok and domains_mod and domains_mod.ssh_domains then
    for _, dom in ipairs(domains_mod.ssh_domains) do
-      -- 使用 SpawnTabDomain：DomainName = dom.name
-      -- 点击时效果等价于 SpawnTab { DomainName = 'nvidia' }
       table.insert(options.launch_menu, {
          label = 'SSH ' .. dom.name .. ' (mux)',
          domain = { DomainName = dom.name },
-         -- 不写 args => 使用远端默认 shell
       })
    end
 end

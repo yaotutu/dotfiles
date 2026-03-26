@@ -1,4 +1,5 @@
 local wezterm = require('wezterm')
+local platform = require('utils.platform')()
 local gpu_adapters = require('utils.gpu_adapter')
 local colors = require('colors.custom')
 
@@ -9,10 +10,10 @@ return {
    webgpu_power_preference = 'HighPerformance',
    webgpu_preferred_adapter = gpu_adapters:pick_best(),
 
-   -- color scheme
+   -- 颜色主题
    colors = colors,
 
-   -- background
+   -- 背景设置
    background = {
       {
          source = { File = wezterm.GLOBAL.background },
@@ -26,10 +27,10 @@ return {
       },
    },
 
-   -- scrollbar
+   -- 滚动条
    enable_scroll_bar = true,
 
-   -- tab bar
+   -- 标签栏
    enable_tab_bar = true,
    hide_tab_bar_if_only_one_tab = false,
    use_fancy_tab_bar = false,
@@ -37,7 +38,7 @@ return {
    show_tab_index_in_tab_bar = false,
    switch_to_last_active_tab_when_closing_tab = true,
 
-   -- window
+   -- 窗口设置
    window_padding = {
       left = 5,
       right = 10,
@@ -47,9 +48,10 @@ return {
    window_close_confirmation = 'NeverPrompt',
    window_frame = {
       active_titlebar_bg = '#090909',
-      border_left_width = '2px',
-      border_right_width = '2px',
-      border_top_height = '2px',
-      border_bottom_height = '2px',
+      -- macOS 使用原生标题栏，边框设置无效
+      border_left_width = '0px',
+      border_right_width = '0px',
+      border_top_height = '0px',
+      border_bottom_height = '0px',
    },
 }

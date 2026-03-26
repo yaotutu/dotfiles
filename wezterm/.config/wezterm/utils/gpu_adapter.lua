@@ -13,22 +13,18 @@ local platform = require('utils.platform')()
 ---@field driver_info? string
 ---@field vendor string
 
----@alias AdapterMap { [WeztermGPUBackend]: WeztermGPUAdapter|nil }|nil
-
 ---@class GpuAdapters
 ---@field __backends WeztermGPUBackend[]
 ---@field __preferred_backend WeztermGPUBackend
----@field __preferred_device_type WeztermGPUDeviceType
----@field DiscreteGpu AdapterMap
----@field IntegratedGpu AdapterMap
----@field Cpu AdapterMap
----@field Other AdapterMap
+---@field DiscreteGpu table|nil
+---@field IntegratedGpu table|nil
+---@field Cpu table|nil
+---@field Other table|nil
 local GpuAdapters = {}
 GpuAdapters.__index = GpuAdapters
 
----See `https://github.com/gfx-rs/wgpu#supported-platforms` for more info on available backends
+-- 各平台支持的图形后端
 GpuAdapters.AVAILABLE_BACKENDS = {
-   windows = { 'Dx12', 'Vulkan', 'Gl' },
    linux = { 'Vulkan', 'Gl' },
    mac = { 'Metal' },
 }
@@ -39,16 +35,17 @@ GpuAdapters.ENUMERATED_GPUS = wezterm.gui.enumerate_gpus()
 ---@return GpuAdapters
 ---@private
 function GpuAdapters:init()
+   local backends = self.AVAILABLE_BACKENDS[platform.os] or { 'Gl' }
    local initial = {
-      __backends = self.AVAILABLE_BACKENDS[platform.os],
-      __preferred_backend = self.AVAILABLE_BACKENDS[platform.os][1],
+      __backends = backends,
+      __preferred_backend = backends[1],
       DiscreteGpu = nil,
       IntegratedGpu = nil,
       Cpu = nil,
       Other = nil,
    }
 
-   -- iterate over the enumerated GPUs and create a lookup table (`AdapterMap`)
+   -- 遍历枚举的 GPU，按 device_type 和 backend 分类
    for _, adapter in ipairs(self.ENUMERATED_GPUS) do
       if not initial[adapter.device_type] then
          initial[adapter.device_type] = {}
@@ -56,78 +53,23 @@ function GpuAdapters:init()
       initial[adapter.device_type][adapter.backend] = adapter
    end
 
-   local gpu_adapters = setmetatable(initial, self)
-
-   return gpu_adapters
+   return setmetatable(initial, self)
 end
 
----Will pick the best adapter based on the following criteria:
----   1. Best GPU available (Discrete > Integrated > Other (for wgpu's OpenGl implementation on Discrete GPU) > Cpu)
----   2. Best graphics API available (based off my very scientific scroll a big log file in neovim test 😁)
----
----Graphics API choices are based on the platform:
----   - Windows: Dx12 > Vulkan > OpenGl
----   - Linux: Vulkan > OpenGl
----   - Mac: Metal
----@see GpuAdapters.AVAILABLE_BACKENDS
----
----If the best adapter combo is not found, it will return `nil` and lets Wezterm decide the best adapter.
----
----Please note these are my own personal preferences and may not be the best for your system.
----If you want to manually choose the adapter, use `GpuAdapters:pick_manual(backend, device_type)`
----Or feel free to re-arrange `GpuAdapters.AVAILABLE_BACKENDS` to you liking
+---选择最佳 GPU 适配器
+---优先级: DiscreteGpu > IntegratedGpu > Other > Cpu
 ---@return WeztermGPUAdapter|nil
 function GpuAdapters:pick_best()
-   local adapters_options = self.DiscreteGpu
+   local adapters = self.DiscreteGpu
+      or self.IntegratedGpu
+      or self.Other
+      or self.Cpu
 
-   if not adapters_options then
-      adapters_options = self.IntegratedGpu
-   end
-
-   if not adapters_options then
-      adapters_options = self.Other
-   end
-
-   if not adapters_options then
-      adapters_options = self.Cpu
-   end
-
-   if not adapters_options then
-      wezterm.log_error('No GPU adapters found. Using Default Adapter.')
+   if not adapters then
       return nil
    end
 
-   local adapter_choice = adapters_options[self.__preferred_backend]
-
-   if not adapter_choice then
-      wezterm.log_error('Preferred backend not available. Using Default Adapter.')
-      return nil
-   end
-
-   return adapter_choice
-end
-
----Manually pick the adapter based on the backend and device type.
----If the adapter is not found, it will return nil and lets Wezterm decide the best adapter.
----@param backend WeztermGPUBackend
----@param device_type WeztermGPUDeviceType
----@return WeztermGPUAdapter|nil
-function GpuAdapters:pick_manual(backend, device_type)
-   local adapters_options = self[device_type]
-
-   if not adapters_options then
-      wezterm.log_error('No GPU adapters found. Using Default Adapter.')
-      return nil
-   end
-
-   local adapter_choice = adapters_options[backend]
-
-   if not adapter_choice then
-      wezterm.log_error('Preferred backend not available. Using Default Adapter.')
-      return nil
-   end
-
-   return adapter_choice
+   return adapters[self.__preferred_backend]
 end
 
 return GpuAdapters:init()
