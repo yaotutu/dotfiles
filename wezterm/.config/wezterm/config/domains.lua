@@ -7,5 +7,12 @@ return {
       multiplexing = "WezTerm",
       assume_shell = "Posix",
     },
+    {
+      name = "orangepi5b",
+      remote_address = "192.168.100.116",
+      username = "yaotutu",
+      multiplexing = "WezTerm",
+      assume_shell = "Posix",
+    },
   },
 }
