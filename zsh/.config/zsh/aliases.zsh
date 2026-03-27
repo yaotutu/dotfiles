@@ -1,4 +1,4 @@
-# === Zellij: 单会话工作流（固定 main）===
+# === Zellij: 单会话工作流（固定 main）
 
 # 一键进入：有就 attach，没有就 create
 alias zj='zellij attach --create main'
