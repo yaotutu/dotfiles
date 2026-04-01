@@ -9,7 +9,7 @@ return {
     },
     {
       name = "orangepi5b",
-      remote_address = "192.168.100.116",
+      remote_address = "192.168.123.116",
       username = "yaotutu",
       multiplexing = "WezTerm",
       assume_shell = "Posix",
