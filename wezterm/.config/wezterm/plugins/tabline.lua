@@ -35,12 +35,10 @@ return {
       tabline_b = { 'workspace' },
       tabline_c = { ' ' },
 
-      -- 中间: tab 列表（序号 + 目录/进程）
+      -- 中间: tab 列表（统一显示序号 + 进程名，激活和未激活状态保持一致）
       tab_active = {
          'index',
-         { 'parent', padding = 0 },
-         '/',
-         { 'cwd', padding = { left = 0, right = 1 } },
+         { 'process', padding = { left = 0, right = 1 } },
       },
       tab_inactive = {
          'index',

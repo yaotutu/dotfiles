@@ -7,14 +7,11 @@
 
 | ID | Time | T | Title | Read |
 |----|------|---|-------|------|
-| #3199 | 4:17 PM | 🟣 | Added Cmd+F keyboard shortcut to toggle macOS native fullscreen in WezTerm | ~173 |
-| #3198 | " | ✅ | Enabled macOS native fullscreen mode for WezTerm | ~186 |
-| #3195 | 4:04 PM | 🟣 | Added intelligent domain inheritance for new tabs in WezTerm | ~254 |
+| #3193 | 4:01 PM | 🔵 | WezTerm configuration loading depends on restart to apply changes | ~190 |
 | #3186 | 3:52 PM | 🔴 | WezTerm tab display and keyboard shortcuts fixed and working | ~295 |
 | #3182 | 3:48 PM | 🔴 | Fixed WezTerm tabs inconsistent display by unifying active/inactive format | ~244 |
 | #3178 | 3:46 PM | 🟣 | Added WezTerm keyboard shortcuts for config reload and launcher menu | ~257 |
-| #3176 | " | 🔵 | WezTerm keybindings ARE manually defined in bindings.lua | ~207 |
-| #3175 | 3:45 PM | 🟣 | Added WezTerm keybindings for config reload and launcher menu | ~239 |
-| #3174 | 3:44 PM | 🔴 | Added missing Cmd+Shift keyboard shortcuts to WezTerm configuration | ~263 |
+| #3177 | " | 🔴 | WezTerm tabs now show consistent process name format for both active and inactive states | ~263 |
+| #3172 | 3:38 PM | 🔴 | Fixed WezTerm tabs inconsistent display state by unifying tab format | ~243 |
 | #3171 | 3:36 PM | 🔵 | WezTerm tabs show different information based on active/inactive state | ~223 |
 </claude-mem-context>

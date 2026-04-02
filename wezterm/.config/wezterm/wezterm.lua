@@ -4,6 +4,12 @@ local backdrops = require('utils.backdrops')
 
 backdrops:set_files():random()
 
+-- 启动时自动全屏（参考官方文档 gui-startup 示例）
+wezterm.on('gui-startup', function(cmd)
+   local tab, pane, window = wezterm.mux.spawn_window(cmd or {})
+   window:gui_window():maximize()
+end)
+
 -- 加载插件（tabline 接管 tab bar 和 status bar）
 local agent_deck = wezterm.plugin.require('https://github.com/Eric162/wezterm-agent-deck')
 local tabline = wezterm.plugin.require('https://github.com/michaelbrusegard/tabline.wez')

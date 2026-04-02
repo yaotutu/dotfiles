@@ -45,6 +45,8 @@ return {
       top = theme.chrome.padding.top,
       bottom = theme.chrome.padding.bottom,
    },
+   -- 默认全屏启动（macOS 原生全屏）
+   native_macos_fullscreen_mode = true,
    window_close_confirmation = 'NeverPrompt',
    window_frame = {
       active_titlebar_bg = theme.chrome.frame.active_titlebar_bg,
