@@ -1,6 +1,6 @@
 local wezterm = require('wezterm')
-local gpu_adapters = require('utils.gpu_adapter')
-local theme = require('colors.theme')
+local gpu_adapters = require('utils.gpu-adapter')
+local theme = require('theme.catppuccin')
 local colors = theme.terminal
 
 return {

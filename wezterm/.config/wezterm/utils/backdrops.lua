@@ -1,5 +1,5 @@
 local wezterm = require('wezterm')
-local theme = require('colors.theme')
+local theme = require('theme.catppuccin')
 
 -- 初始化随机种子
 math.randomseed(os.time())

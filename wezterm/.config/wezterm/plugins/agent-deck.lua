@@ -1,4 +1,4 @@
-local theme = require('colors.theme')
+local theme = require('theme.catppuccin')
 
 return {
    update_interval = 500,

@@ -1,6 +1,6 @@
 local platform = require('utils.platform')
 local wezterm = require('wezterm')
-local remotes = require('config.remotes')
+local remotes = require('core.remotes')
 
 local function add_entry(launch_menu, seen, entry, key)
    if seen[key] then
