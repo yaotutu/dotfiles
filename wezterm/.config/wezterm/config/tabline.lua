@@ -47,9 +47,9 @@ return {
          { 'process', padding = { left = 0, right = 1 } },
       },
 
-      -- 右侧: 系统信息
-      tabline_x = { 'ram', 'cpu' },
-      tabline_y = { 'datetime', 'battery' },
-      tabline_z = { 'hostname' },
+      -- 右侧: 系统信息 + domain（显示 local 或 SSH 域名）
+      tabline_x = { 'domain' },
+      tabline_y = { 'ram', 'cpu' },
+      tabline_z = { 'datetime', 'battery' },
    },
 }
