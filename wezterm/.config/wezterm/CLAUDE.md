@@ -7,5 +7,6 @@
 
 | ID | Time | T | Title | Read |
 |----|------|---|-------|------|
+| #3207 | 4:47 PM | ✅ | Changed WezTerm startup behavior from maximized window to macOS native fullscreen | ~217 |
 | #3200 | 4:24 PM | 🟣 | Added auto-fullscreen on WezTerm startup | ~176 |
 </claude-mem-context>

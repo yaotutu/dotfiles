@@ -4,18 +4,15 @@ local backdrops = require('utils.backdrops')
 
 backdrops:set_files():random()
 
--- 启动时自动全屏（参考官方文档 gui-startup 示例）
+-- 启动时自动进入 macOS 原生全屏
 wezterm.on('gui-startup', function(cmd)
    local tab, pane, window = wezterm.mux.spawn_window(cmd or {})
-   window:gui_window():maximize()
+   window:gui_window():toggle_fullscreen()
 end)
 
 -- 加载插件（tabline 接管 tab bar 和 status bar）
 local agent_deck = wezterm.plugin.require('https://github.com/Eric162/wezterm-agent-deck')
 local tabline = wezterm.plugin.require('https://github.com/michaelbrusegard/tabline.wez')
-
--- 只加载 tabline 不管的事件（如右键菜单）
-require('handlers.new-tab-button').setup()
 
 local config = builder.build({
    'core.appearance',

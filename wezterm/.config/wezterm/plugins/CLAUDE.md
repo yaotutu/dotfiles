@@ -7,6 +7,7 @@
 
 | ID | Time | T | Title | Read |
 |----|------|---|-------|------|
+| #3208 | 4:52 PM | 🟣 | Added WezTerm plugin for right-click new-tab button to open Launcher | ~212 |
 | #3193 | 4:01 PM | 🔵 | WezTerm configuration loading depends on restart to apply changes | ~190 |
 | #3186 | 3:52 PM | 🔴 | WezTerm tab display and keyboard shortcuts fixed and working | ~295 |
 | #3182 | 3:48 PM | 🔴 | Fixed WezTerm tabs inconsistent display by unifying active/inactive format | ~244 |

@@ -9,4 +9,10 @@
 |----|------|---|-------|------|
 | #2985 | 4:20 PM | 🔄 | GPU adapter utility simplified for macOS-only Metal backend | ~361 |
 | #2984 | 4:19 PM | 🔄 | Platform detection utility removed for macOS-only configuration | ~261 |
+
+### Apr 2, 2026
+
+| ID | Time | T | Title | Read |
+|----|------|---|-------|------|
+| #3211 | 4:55 PM | ✅ | Removed launcher.lua utility file from WezTerm configuration | ~138 |
 </claude-mem-context>
