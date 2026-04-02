@@ -1,15 +1,28 @@
-local Config = require('config')
+local wezterm = require('wezterm')
+local config_builder = require('config')
+local agent_deck = wezterm.plugin.require('https://github.com/Eric162/wezterm-agent-deck')
+local backdrops = require('utils.backdrops')
+local agent_deck_config = require('config.agent_deck')
 
-require('utils.backdrops'):set_files():random()
+backdrops:set_files():random()
 
-require('events.right-status').setup()
-require('events.tab-title').setup()
-require('events.new-tab-button').setup()
+require('events').setup()
 
-return Config:init()
-    :append(require('config.appearance'))
-    :append(require('config.bindings'))
-    :append(require('config.domains'))
-    :append(require('config.fonts'))
-    :append(require('config.general'))
-    :append(require('config.launch')).options
+local config = config_builder.build({
+   'config.appearance',
+   'config.bindings',
+   'config.domains',
+   'config.fonts',
+   'config.general',
+   'config.launch',
+})
+
+config.status_update_interval = agent_deck_config.update_interval
+
+if agent_deck_config.notifications.suppress_osc_notifications then
+   config.notification_handling = 'NeverShow'
+end
+
+agent_deck.setup(agent_deck_config)
+
+return config

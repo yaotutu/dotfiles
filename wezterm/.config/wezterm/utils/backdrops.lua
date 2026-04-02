@@ -1,5 +1,5 @@
 local wezterm = require('wezterm')
-local colors = require('colors.custom')
+local theme = require('colors.theme')
 
 -- 初始化随机种子
 math.randomseed(os.time())
@@ -47,10 +47,10 @@ function BackDrops:_set_opt(window)
             horizontal_align = 'Center',
          },
          {
-            source = { Color = colors.background },
+            source = { Color = theme.chrome.background.tint },
             height = '100%',
             width = '100%',
-            opacity = 0.96,
+            opacity = theme.chrome.background.opacity,
          },
       },
    }
@@ -85,7 +85,7 @@ end
 ---@param window any WezTerm Window
 ---@param idx number index of the `files` array
 function BackDrops:set_img(window, idx)
-   if idx > #self.files or idx < 0 then
+   if idx > #self.files or idx < 1 then
       wezterm.log_error('Index out of range')
       return
    end

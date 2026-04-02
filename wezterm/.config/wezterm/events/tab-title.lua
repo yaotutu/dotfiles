@@ -1,47 +1,37 @@
 local wezterm = require('wezterm')
+local agent_deck = wezterm.plugin.require('https://github.com/Eric162/wezterm-agent-deck')
+local theme = require('colors.theme')
+local pane_utils = require('utils.pane')
 
 local M = {}
 
--- 图标
-local ICON_LOCAL = ''
-local ICON_REMOTE = '󰢹'
 local GLYPH_LEFT = ''
 local GLYPH_RIGHT = ''
 local GLYPH_UNSEEN = ''
 
 M.setup = function()
    wezterm.on('format-tab-title', function(tab, tabs, panes, config, hover, max_width)
-      -- 通过 pane_id 获取真正的 Pane 对象
-      local pane = wezterm.mux.get_pane(tab.active_pane.pane_id)
+      local pane = pane_utils.get_active_pane(tab)
       if not pane then
          return { { Text = '…' } }
       end
 
-      -- 获取域名（区分本地和远程）
-      local domain = pane:get_domain_name() or 'local'
-      local is_local = domain == 'local'
+      pcall(agent_deck.update_pane, pane)
 
-      -- 获取进程名
-      local process = pane:get_foreground_process_name() or ''
-      local proc_name = process:match('([^/\\]+)$') or 'zsh'
-      proc_name = proc_name:gsub('%.exe$', '')
+      local active_state = agent_deck.get_agent_state(tab.active_pane.pane_id)
+      local text = pane_utils.get_title_label(pane, active_state)
+      local agent_cells = pane_utils.collect_tab_agent_cells(tab, agent_deck)
 
-      -- 构建标题
-      local icon = is_local and ICON_LOCAL or ICON_REMOTE
-      local label = is_local and proc_name or domain
-      local text = icon .. ' ' .. label
-
-      -- 颜色
       local bg, fg
       if tab.is_active then
-         bg = '#7FB4CA'
-         fg = '#11111b'
+         bg = theme.chrome.tab.active.bg
+         fg = theme.chrome.tab.active.fg
       elseif hover then
-         bg = '#587d8c'
-         fg = '#1c1b19'
+         bg = theme.chrome.tab.hover.bg
+         fg = theme.chrome.tab.hover.fg
       else
-         bg = '#45475a'
-         fg = '#cdd6f4'
+         bg = theme.chrome.tab.inactive.bg
+         fg = theme.chrome.tab.inactive.fg
       end
 
       -- 检查未读输出
@@ -55,23 +45,33 @@ M.setup = function()
 
       -- 构建单元格
       local cells = {
-         { Background = { Color = 'rgba(0,0,0,0.4)' } },
+         { Background = { Color = theme.chrome.glass } },
          { Foreground = { Color = bg } },
          { Text = GLYPH_LEFT },
          { Background = { Color = bg } },
          { Foreground = { Color = fg } },
          { Attribute = { Intensity = 'Bold' } },
-         { Text = ' ' .. text },
+         { Text = ' ' },
       }
 
+      if #agent_cells > 0 then
+         for _, cell in ipairs(agent_cells) do
+            table.insert(cells, cell)
+         end
+         table.insert(cells, { Foreground = { Color = fg } })
+         table.insert(cells, { Text = ' ' })
+      end
+
+      table.insert(cells, { Text = text })
+
       if has_unseen then
-         table.insert(cells, { Foreground = { Color = '#FFA066' } })
+         table.insert(cells, { Foreground = { Color = theme.chrome.tab.unseen } })
          table.insert(cells, { Text = ' ' .. GLYPH_UNSEEN })
       end
 
       table.insert(cells, { Foreground = { Color = fg } })
       table.insert(cells, { Text = ' ' })
-      table.insert(cells, { Background = { Color = 'rgba(0,0,0,0.4)' } })
+      table.insert(cells, { Background = { Color = theme.chrome.glass } })
       table.insert(cells, { Foreground = { Color = bg } })
       table.insert(cells, { Text = GLYPH_RIGHT })
 

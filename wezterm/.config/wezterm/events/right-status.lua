@@ -1,72 +1,53 @@
 -- events/right-status.lua
 local wezterm = require('wezterm')
+local agent_deck = wezterm.plugin.require('https://github.com/Eric162/wezterm-agent-deck')
+local theme = require('colors.theme')
+local pane_utils = require('utils.pane')
 
 local M = {}
-local nf = wezterm.nerdfonts
 
--- local ->  local；其他域 -> 󰢹 name
-local function location_label(pane, window)
-   local ok, name = pcall(function()
-      return pane:get_domain_name()
-   end)
-
-   if not ok or not name or name == '' then
-      name = '?'
+local function add_part(items, text, color)
+   if #items > 1 then
+      table.insert(items, { Foreground = { Color = theme.chrome.status.separator } })
+      table.insert(items, { Text = '  ·  ' })
    end
 
-   local icon
-   if name == 'local' then
-      icon = nf.md_laptop or ''
-   else
-      icon = nf.md_server or '󰢹'
-   end
-
-   local label = icon .. ' ' .. name
-
-   -- 非 default 的 workspace 才显示
-   local ws = window:active_workspace()
-   if ws and ws ~= 'default' then
-      label = label .. ' · ' .. ws
-   end
-
-   return label
-end
-
--- 模式标签：key table / leader
-local function mode_label(window)
-   local keytbl = window:active_key_table()
-   if keytbl then
-      -- 用小写 + 简短前缀，看起来没那么吵
-      return keytbl:lower()
-   elseif window:leader_is_active() then
-      -- 一个小标记即可
-      return 'Ⓛ'
-   end
-   return nil
+   table.insert(items, { Foreground = { Color = color or theme.chrome.status.text } })
+   table.insert(items, { Text = text })
 end
 
 local function build_right_status(window, pane)
-   local parts = {}
+   pane_utils.refresh_agent_states(window, agent_deck)
 
-   -- 1) 位置： local · ai3d / 󰢹 nvidia · ai3d
-   table.insert(parts, location_label(pane, window))
+   local items = {
+      { Text = ' ' },
+   }
 
-   -- 2) 模式（可选）
-   local mode = mode_label(window)
-   if mode then
-      table.insert(parts, mode)
+   add_part(items, pane_utils.get_location_label(pane, window), theme.chrome.status.text)
+
+   local counts = agent_deck.count_agents_by_status()
+   if counts then
+      local waiting = counts.waiting or 0
+      local working = counts.working or 0
+
+      if waiting > 0 then
+         add_part(items, '◔ ' .. waiting, theme.agent.waiting)
+      end
+
+      if working > 0 then
+         add_part(items, '● ' .. working, theme.agent.working)
+      end
    end
 
-   -- 3) 时间（小时:分钟就够用了，秒会有点跳眼）
-   local time = wezterm.strftime('%H:%M')
-   table.insert(parts, time)
+   local mode = pane_utils.get_mode_label(window)
+   if mode then
+      add_part(items, mode, theme.chrome.status.mode)
+   end
 
-   local text = ' ' .. table.concat(parts, '  ·  ') .. ' '
+   add_part(items, wezterm.strftime('%H:%M'), theme.chrome.status.quiet)
+   table.insert(items, { Text = ' ' })
 
-   return wezterm.format({
-      { Attribute = { Intensity = 'Half' } }, -- 整体稍微淡一点
-      { Text = text },
-   })
+   return wezterm.format(items)
 end
 
 M.setup = function()

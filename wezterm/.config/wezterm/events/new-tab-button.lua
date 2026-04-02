@@ -1,5 +1,5 @@
 local wezterm = require('wezterm')
-local nf = wezterm.nerdfonts
+local launcher = require('utils.launcher')
 
 local M = {}
 
@@ -10,13 +10,7 @@ M.setup = function()
       end
 
       if default_action and button == 'Right' then
-         window:perform_action(
-            wezterm.action.ShowLauncherArgs({
-               title = nf.fa_rocket .. '  Select/Search:',
-               flags = 'FUZZY|LAUNCH_MENU_ITEMS|DOMAINS',
-            }),
-            pane
-         )
+         window:perform_action(launcher.show_launcher_action(), pane)
       end
       return false
    end)

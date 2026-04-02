@@ -9,7 +9,6 @@
 |----|------|---|-------|------|
 | #2991 | 4:30 PM | ✅ | Launch configuration restored with macOS/Linux platform support | ~281 |
 | #2987 | 4:25 PM | ✅ | SSH domain configuration reverted to remove no_sftp option | ~205 |
-| #2981 | 4:16 PM | 🔄 | Fonts configuration simplified for macOS-only usage | ~252 |
 | #2979 | 4:15 PM | 🔄 | Keybindings simplified for macOS-only usage | ~307 |
 | #2976 | 4:10 PM | 🔄 | Redundant SSH platform check removed from launch.lua | ~254 |
 | #2975 | 4:09 PM | ✅ | Platform-aware window frame borders added to appearance config | ~312 |

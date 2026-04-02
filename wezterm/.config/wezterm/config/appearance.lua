@@ -1,7 +1,7 @@
 local wezterm = require('wezterm')
-local platform = require('utils.platform')()
 local gpu_adapters = require('utils.gpu_adapter')
-local colors = require('colors.custom')
+local theme = require('colors.theme')
+local colors = theme.terminal
 
 return {
    animation_fps = 60,
@@ -20,10 +20,10 @@ return {
          horizontal_align = 'Center',
       },
       {
-         source = { Color = colors.background },
+         source = { Color = theme.chrome.background.tint },
          height = '100%',
          width = '100%',
-         opacity = 0.96,
+         opacity = theme.chrome.background.opacity,
       },
    },
 
@@ -40,14 +40,15 @@ return {
 
    -- 窗口设置
    window_padding = {
-      left = 5,
-      right = 10,
-      top = 12,
-      bottom = 7,
+      left = theme.chrome.padding.left,
+      right = theme.chrome.padding.right,
+      top = theme.chrome.padding.top,
+      bottom = theme.chrome.padding.bottom,
    },
    window_close_confirmation = 'NeverPrompt',
    window_frame = {
-      active_titlebar_bg = '#090909',
+      active_titlebar_bg = theme.chrome.frame.active_titlebar_bg,
+      inactive_titlebar_bg = theme.chrome.frame.inactive_titlebar_bg,
       -- macOS 使用原生标题栏，边框设置无效
       border_left_width = '0px',
       border_right_width = '0px',

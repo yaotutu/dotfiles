@@ -1,33 +1,25 @@
 local wezterm = require('wezterm')
 
----@class Config
----@field options table
-local Config = {}
-Config.__index = Config
+local M = {}
 
----Initialize Config
----@return Config
-function Config:init()
-   local config = setmetatable({ options = {} }, self)
-   return config
-end
-
----Append to `Config.options`
----@param new_options table new options to append
----@return Config
-function Config:append(new_options)
-   for k, v in pairs(new_options) do
-      if self.options[k] ~= nil then
-         wezterm.log_warn(
-            'Duplicate config option detected: ',
-            { old = self.options[k], new = new_options[k] }
-         )
-         goto continue
+local function merge_options(options, new_options, source)
+   for key, value in pairs(new_options) do
+      if options[key] ~= nil then
+         wezterm.log_warn('Config option overridden by ' .. source .. ': ' .. key)
       end
-      self.options[k] = v
-      ::continue::
+      options[key] = value
    end
-   return self
 end
 
-return Config
+function M.build(module_names)
+   local options = {}
+
+   for _, module_name in ipairs(module_names) do
+      local module_options = require(module_name)
+      merge_options(options, module_options, module_name)
+   end
+
+   return options
+end
+
+return M
