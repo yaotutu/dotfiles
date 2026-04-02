@@ -3,24 +3,6 @@ local wezterm = require('wezterm')
 -- tabline.wez 配置（参考官方示例风格）
 -- 文档: https://github.com/michaelbrusegard/tabline.wez
 
--- 自定义 agent 状态组件
-local function agent_status(tab)
-   local agent_deck = wezterm.plugin.require('https://github.com/Eric162/wezterm-agent-deck')
-   local state = agent_deck.get_agent_state(tab.active_pane.pane_id)
-
-   if not state or state.status == 'inactive' or not state.agent_type then
-      return ''
-   end
-
-   local icon = agent_deck.get_status_icon(state.status) or '●'
-   -- 返回带颜色的 format item 数组
-   return {
-      { Foreground = { Color = agent_deck.get_status_color(state.status) } },
-      { Text = icon .. ' ' .. state.agent_type },
-      'ResetAttributes',
-   }
-end
-
 return {
    options = {
       -- 使用内置主题
@@ -53,18 +35,16 @@ return {
       tabline_b = { 'workspace' },
       tabline_c = { ' ' },
 
-      -- 中间: tab 列表（序号 + 目录/进程 + agent 状态）
+      -- 中间: tab 列表（序号 + 目录/进程）
       tab_active = {
          'index',
          { 'parent', padding = 0 },
          '/',
          { 'cwd', padding = { left = 0, right = 1 } },
-         { agent_status, padding = { left = 0, right = 1 } },
       },
       tab_inactive = {
          'index',
          { 'process', padding = { left = 0, right = 1 } },
-         { agent_status, padding = { left = 0, right = 1 } },
       },
 
       -- 右侧: 系统信息
