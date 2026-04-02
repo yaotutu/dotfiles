@@ -3,7 +3,7 @@ local wezterm = require('wezterm')
 -- tabline.wez 配置（参考官方示例风格）
 -- 文档: https://github.com/michaelbrusegard/tabline.wez
 
--- 自定义 tab 标签：本地/远程区分
+-- 自定义 tab 标签：本地/远程区分（使用 ASCII 避免图标兼容问题）
 local function tab_label(tab)
    local pane = tab.active_pane
    local domain = pane.domain_name or 'local'
@@ -11,9 +11,9 @@ local function tab_label(tab)
    local proc_name = process:match('([^/\\]+)$') or 'zsh'
 
    if domain == 'local' then
-      return wezterm.nerdfonts.md_laptop .. ' ' .. proc_name
+      return '[local] ' .. proc_name
    else
-      return wezterm.nerdfonts.md_server .. ' ' .. domain .. ' · ' .. proc_name
+      return '[' .. domain .. '] ' .. proc_name
    end
 end
 
