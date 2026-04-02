@@ -36,4 +36,13 @@ local tabline_config = require('plugins.tabline')
 tabline.setup(tabline_config)
 tabline.apply_to_config(config)
 
+-- tabline.apply_to_config 会把 window_padding 覆盖为 0，需要重新设置
+local theme = require('theme.catppuccin')
+config.window_padding = {
+   left = theme.chrome.padding.left,
+   right = theme.chrome.padding.right,
+   top = theme.chrome.padding.top,
+   bottom = theme.chrome.padding.bottom,
+}
+
 return config

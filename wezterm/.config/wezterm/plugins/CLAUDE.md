@@ -7,6 +7,7 @@
 
 | ID | Time | T | Title | Read |
 |----|------|---|-------|------|
+| #3217 | 5:15 PM | 🔵 | WezTerm tab bar does not support true centering of tabs | ~288 |
 | #3208 | 4:52 PM | 🟣 | Added WezTerm plugin for right-click new-tab button to open Launcher | ~212 |
 | #3193 | 4:01 PM | 🔵 | WezTerm configuration loading depends on restart to apply changes | ~190 |
 | #3186 | 3:52 PM | 🔴 | WezTerm tab display and keyboard shortcuts fixed and working | ~295 |

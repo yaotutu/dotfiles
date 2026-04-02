@@ -62,7 +62,7 @@ local chrome = {
    padding = {
       left = 5,
       right = 10,
-      top = 12,
+      top = 30,
       bottom = 7,
    },
 }

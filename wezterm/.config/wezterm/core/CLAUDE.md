@@ -7,6 +7,8 @@
 
 | ID | Time | T | Title | Read |
 |----|------|---|-------|------|
+| #3217 | 5:15 PM | 🔵 | WezTerm tab bar does not support true centering of tabs | ~288 |
+| #3212 | 4:58 PM | 🔵 | WezTerm configured to use macOS native fullscreen mode by default | ~214 |
 | #3199 | 4:17 PM | 🟣 | Added Cmd+F keyboard shortcut to toggle macOS native fullscreen in WezTerm | ~173 |
 | #3198 | " | ✅ | Enabled macOS native fullscreen mode for WezTerm | ~186 |
 | #3195 | 4:04 PM | 🟣 | Added intelligent domain inheritance for new tabs in WezTerm | ~254 |
