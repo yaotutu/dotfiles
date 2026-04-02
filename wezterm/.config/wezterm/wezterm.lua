@@ -6,12 +6,12 @@ local tabline_config = require('config.tabline')
 
 backdrops:set_files():random()
 
--- 加载插件
+-- 加载插件（tabline 接管 tab bar 和 status bar）
 local agent_deck = wezterm.plugin.require('https://github.com/Eric162/wezterm-agent-deck')
 local tabline = wezterm.plugin.require('https://github.com/michaelbrusegard/tabline.wez')
 
--- 设置事件（tabline 会接管 tab 和 status，所以选择性加载）
-require('events.tab-title').setup() -- 保留自定义 tab 标题逻辑
+-- 只加载 tabline 不管的事件（如右键菜单）
+require('events').setup()
 
 local config = config_builder.build({
    'config.appearance',
@@ -29,7 +29,7 @@ if agent_deck_config.notifications.suppress_osc_notifications then
 end
 agent_deck.setup(agent_deck_config)
 
--- tabline 配置（会接管 tab bar 和右侧状态栏）
+-- tabline 接管 tab bar 和 status bar
 tabline.setup(tabline_config)
 tabline.apply_to_config(config)
 

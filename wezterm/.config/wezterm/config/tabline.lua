@@ -1,51 +1,78 @@
 local wezterm = require('wezterm')
-local theme = require('colors.theme')
 
 -- tabline.wez 配置
 -- 文档: https://github.com/michaelbrusegard/tabline.wez
 
+-- 自定义 agent 状态组件（使用 agent-deck 数据）
+local function agent_status(tab)
+   local agent_deck = wezterm.plugin.require('https://github.com/Eric162/wezterm-agent-deck')
+   local state = agent_deck.get_agent_state(tab.active_pane.pane_id)
+
+   if not state or state.status == 'inactive' or not state.agent_type then
+      return ''
+   end
+
+   local icon = agent_deck.get_status_icon(state.status) or '●'
+   return string.format('%s %s', icon, state.agent_type)
+end
+
+-- 自定义标题：远程显示域名+agent，本地显示进程
+local function custom_title(tab)
+   local pane = tab.active_pane
+   local domain = pane.domain_name or 'local'
+
+   if domain ~= 'local' then
+      -- 远程：尝试获取 agent 状态
+      local agent_deck = wezterm.plugin.require('https://github.com/Eric162/wezterm-agent-deck')
+      local state = agent_deck.get_agent_state(pane.pane_id)
+      if state and state.agent_type and state.status ~= 'inactive' then
+         return string.format('%s · %s', domain, state.agent_type)
+      end
+      return domain
+   end
+
+   -- 本地：显示进程名
+   local process = pane.foreground_process_name or ''
+   return process:match('([^/\\]+)$') or 'zsh'
+end
+
 return {
    options = {
-      -- 使用与系统一致的主题色
-      theme = 'Catppuccin Mocha', -- tabline 内置主题，接近我们的 palette
+      -- 使用内置主题
+      theme = 'Catppuccin Mocha',
 
-      -- 分隔符风格: 'slant', 'arrow', 'rounded', 'none'
+      -- 无分隔符，简洁风格
       section_separators = { left = '', right = '' },
-      component_separators = { left = '|', right = '|' },
+      component_separators = { left = '│', right = '│' },
       tab_separators = { left = '', right = '' },
 
-      -- 不显示图标，保持简洁
-      icons_enabled = false,
+      -- 启用图标
+      icons_enabled = true,
 
-      -- tab 位置
+      -- tab 在顶部
       tab_bar_at_bottom = false,
    },
 
    sections = {
-      -- 左侧: 当前模式 + workspace
+      -- 左侧
       tabline_a = { 'mode' },
       tabline_b = { 'workspace' },
-      tabline_c = { ' ' },
+      tabline_c = {},
 
-      -- 中间: tab 标题
-      -- index = tab 序号, parent = 父目录, cwd = 当前目录, process = 进程名
+      -- 中间：tab 标题
       tab_active = {
          'index',
-         { 'parent', padding = 0 },
-         '/',
-         { 'cwd', padding = { left = 0, right = 1 } },
+         { custom_title, padding = { left = 1, right = 1 } },
+         { agent_status, padding = { left = 1 } },
       },
       tab_inactive = {
          'index',
-         { 'process', padding = { left = 0, right = 1 } },
+         { custom_title, padding = { left = 1, right = 1 } },
       },
 
-      -- 右侧: 时间 + domain
-      tabline_x = {}, -- 空，给 agent-deck 留位置
-      tabline_y = { 'datetime' },
+      -- 右侧
+      tabline_x = {},
+      tabline_y = { 'datetime', { 'hostname', ssh_only = true } },
       tabline_z = { 'domain' },
    },
-
-   -- 扩展示例: 自定义 component 显示 agent 状态
-   -- 如果需要集成 agent-deck，可以在这里添加自定义组件
 }
