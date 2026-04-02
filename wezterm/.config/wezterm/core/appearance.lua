@@ -10,7 +10,8 @@ return {
    webgpu_power_preference = 'HighPerformance',
    webgpu_preferred_adapter = gpu_adapters:pick_best(),
 
-   -- 颜色主题
+   -- 颜色主题（使用内置 Catppuccin Mocha，自定义颜色通过 colors 覆盖）
+   color_scheme = 'Catppuccin Mocha',
    colors = colors,
 
    -- 背景设置
@@ -34,7 +35,7 @@ return {
    enable_tab_bar = true,
    hide_tab_bar_if_only_one_tab = false,
    use_fancy_tab_bar = false,
-   -- tab_max_width 不设限制，让标题完整显示
+   tab_max_width = 32,
    show_tab_index_in_tab_bar = false,
    switch_to_last_active_tab_when_closing_tab = true,
 

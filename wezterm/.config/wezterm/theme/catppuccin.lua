@@ -28,11 +28,12 @@ local palette = {
 }
 
 local chrome = {
-   -- 不使用透明背景，避免视觉重叠
    glass = palette.base,
+   -- Tab bar 背景（与 powerline 半圆边框背景一致）
+   tab_bar_bg = palette.crust,
    tab = {
       active = {
-         bg = palette.blue,
+         bg = palette.sapphire,
          fg = palette.crust,
       },
       hover = {
@@ -40,10 +41,10 @@ local chrome = {
          fg = palette.text,
       },
       inactive = {
-         bg = palette.surface0,
+         bg = palette.surface1,
          fg = palette.subtext1,
       },
-      unseen = palette.yellow,
+      unseen = palette.peach,
    },
    status = {
       text = palette.subtext1,
@@ -102,29 +103,22 @@ local terminal = {
       '#61D6D6',
       '#F2F2F2',
    },
+   -- tab bar 配色（powerline 风格）
    tab_bar = {
-      background = chrome.glass,
+      background = palette.crust,
       active_tab = {
-         bg_color = chrome.tab.active.bg,
-         fg_color = chrome.tab.active.fg,
+         bg_color = palette.sapphire,
+         fg_color = palette.crust,
       },
       inactive_tab = {
-         bg_color = chrome.tab.inactive.bg,
-         fg_color = chrome.tab.inactive.fg,
+         bg_color = palette.surface1,
+         fg_color = palette.subtext1,
       },
       inactive_tab_hover = {
-         bg_color = chrome.tab.hover.bg,
-         fg_color = chrome.tab.hover.fg,
-      },
-      new_tab = {
-         bg_color = palette.base,
+         bg_color = palette.surface2,
          fg_color = palette.text,
       },
-      new_tab_hover = {
-         bg_color = palette.mantle,
-         fg_color = palette.text,
-         italic = true,
-      },
+      inactive_tab_edge = palette.surface0,
    },
    visual_bell = palette.surface0,
    indexed = {
