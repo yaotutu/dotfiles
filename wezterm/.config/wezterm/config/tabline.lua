@@ -3,20 +3,6 @@ local wezterm = require('wezterm')
 -- tabline.wez 配置（参考官方示例风格）
 -- 文档: https://github.com/michaelbrusegard/tabline.wez
 
--- 自定义 tab 标签：本地/远程区分（使用 ASCII 避免图标兼容问题）
-local function tab_label(tab)
-   local pane = tab.active_pane
-   local domain = pane.domain_name or 'local'
-   local process = pane.foreground_process_name or ''
-   local proc_name = process:match('([^/\\]+)$') or 'zsh'
-
-   if domain == 'local' then
-      return '[local] ' .. proc_name
-   else
-      return '[' .. domain .. '] ' .. proc_name
-   end
-end
-
 return {
    options = {
       -- 使用内置主题
@@ -49,14 +35,16 @@ return {
       tabline_b = { 'workspace' },
       tabline_c = { ' ' },
 
-      -- 中间: tab 列表（序号 + 本地/远程标签）
+      -- 中间: tab 列表（序号 + 目录/进程）
       tab_active = {
          'index',
-         { tab_label, padding = { left = 0, right = 1 } },
+         { 'parent', padding = 0 },
+         '/',
+         { 'cwd', padding = { left = 0, right = 1 } },
       },
       tab_inactive = {
          'index',
-         { tab_label, padding = { left = 0, right = 1 } },
+         { 'process', padding = { left = 0, right = 1 } },
       },
 
       -- 右侧: 系统信息
