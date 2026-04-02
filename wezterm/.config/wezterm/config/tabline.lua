@@ -35,20 +35,15 @@ return {
       tabline_b = { 'workspace' },
       tabline_c = { ' ' },
 
-      -- 中间: tab 列表（序号 + 本地/远程前缀 + 目录/进程）
-      -- 使用 tabline 内置 domain 属性作为前缀
+      -- 中间: tab 列表（序号 + 目录/进程）
       tab_active = {
          'index',
-         { 'domain', padding = { left = 0, right = 0 } },
-         { Text = ' | ' },
          { 'parent', padding = 0 },
          '/',
          { 'cwd', padding = { left = 0, right = 1 } },
       },
       tab_inactive = {
          'index',
-         { 'domain', padding = { left = 0, right = 0 } },
-         { Text = ' | ' },
          { 'process', padding = { left = 0, right = 1 } },
       },
 
