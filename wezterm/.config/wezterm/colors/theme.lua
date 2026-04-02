@@ -28,21 +28,22 @@ local palette = {
 }
 
 local chrome = {
-   glass = 'rgba(0, 0, 0, 0.40)',
+   -- 不使用透明背景，避免视觉重叠
+   glass = palette.base,
    tab = {
       active = {
-         bg = palette.sapphire,
+         bg = palette.blue,
          fg = palette.crust,
       },
       hover = {
-         bg = palette.teal,
-         fg = palette.crust,
-      },
-      inactive = {
-         bg = palette.surface1,
+         bg = palette.surface2,
          fg = palette.text,
       },
-      unseen = palette.peach,
+      inactive = {
+         bg = palette.surface0,
+         fg = palette.subtext1,
+      },
+      unseen = palette.yellow,
    },
    status = {
       text = palette.subtext1,

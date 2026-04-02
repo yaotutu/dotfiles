@@ -5,9 +5,10 @@ local pane_utils = require('utils.pane')
 
 local M = {}
 
-local GLYPH_LEFT = ''
-local GLYPH_RIGHT = ''
-local GLYPH_UNSEEN = ''
+-- 高辨识度、无装饰风格
+local GLYPH_LEFT = '['
+local GLYPH_RIGHT = ']'
+local GLYPH_UNSEEN = '*'
 
 M.setup = function()
    wezterm.on('format-tab-title', function(tab, tabs, panes, config, hover, max_width)
@@ -43,34 +44,28 @@ M.setup = function()
          end
       end
 
-      -- 构建单元格
+      -- 高辨识度样式：[内容] 或 [*内容]（有未读时）
       local cells = {
          { Background = { Color = theme.chrome.glass } },
          { Foreground = { Color = bg } },
          { Text = GLYPH_LEFT },
          { Background = { Color = bg } },
          { Foreground = { Color = fg } },
-         { Attribute = { Intensity = 'Bold' } },
-         { Text = ' ' },
       }
 
       if #agent_cells > 0 then
          for _, cell in ipairs(agent_cells) do
             table.insert(cells, cell)
          end
-         table.insert(cells, { Foreground = { Color = fg } })
-         table.insert(cells, { Text = ' ' })
       end
-
-      table.insert(cells, { Text = text })
 
       if has_unseen then
          table.insert(cells, { Foreground = { Color = theme.chrome.tab.unseen } })
-         table.insert(cells, { Text = ' ' .. GLYPH_UNSEEN })
+         table.insert(cells, { Text = GLYPH_UNSEEN })
+         table.insert(cells, { Foreground = { Color = fg } })
       end
 
-      table.insert(cells, { Foreground = { Color = fg } })
-      table.insert(cells, { Text = ' ' })
+      table.insert(cells, { Text = text })
       table.insert(cells, { Background = { Color = theme.chrome.glass } })
       table.insert(cells, { Foreground = { Color = bg } })
       table.insert(cells, { Text = GLYPH_RIGHT })
