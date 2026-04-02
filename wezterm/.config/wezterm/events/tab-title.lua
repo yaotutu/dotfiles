@@ -5,9 +5,7 @@ local pane_utils = require('utils.pane')
 
 local M = {}
 
--- 高辨识度、无装饰风格
-local GLYPH_LEFT = '['
-local GLYPH_RIGHT = ']'
+-- 无装饰风格：只用背景色区分，不用边框符号
 local GLYPH_UNSEEN = '*'
 
 M.setup = function()
@@ -44,20 +42,12 @@ M.setup = function()
          end
       end
 
-      -- 高辨识度样式：[内容] 或 [*内容]（有未读时）
+      -- 纯色块风格：背景色即边界，无额外符号
       local cells = {
-         { Background = { Color = theme.chrome.glass } },
-         { Foreground = { Color = bg } },
-         { Text = GLYPH_LEFT },
          { Background = { Color = bg } },
          { Foreground = { Color = fg } },
+         { Text = ' ' },
       }
-
-      if #agent_cells > 0 then
-         for _, cell in ipairs(agent_cells) do
-            table.insert(cells, cell)
-         end
-      end
 
       if has_unseen then
          table.insert(cells, { Foreground = { Color = theme.chrome.tab.unseen } })
@@ -65,10 +55,13 @@ M.setup = function()
          table.insert(cells, { Foreground = { Color = fg } })
       end
 
-      table.insert(cells, { Text = text })
-      table.insert(cells, { Background = { Color = theme.chrome.glass } })
-      table.insert(cells, { Foreground = { Color = bg } })
-      table.insert(cells, { Text = GLYPH_RIGHT })
+      if #agent_cells > 0 then
+         for _, cell in ipairs(agent_cells) do
+            table.insert(cells, cell)
+         end
+      end
+
+      table.insert(cells, { Text = text .. ' ' })
 
       return cells
    end)
