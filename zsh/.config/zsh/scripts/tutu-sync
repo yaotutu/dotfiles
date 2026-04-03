@@ -15,17 +15,38 @@ PASSFILE="$SCRIPT_DIR/.secret_password"
 
 log() { echo "[$(date '+%H:%M:%S')] $*"; }
 
-# ===== 1. 同步 git =====
-log "开始同步 dotfiles 仓库..."
 cd "$REPO_ROOT"
-
 BRANCH="$(git branch --show-current)"
 
+# ===== 1. 检查远程是否有更新 =====
+log "检查远程仓库更新..."
+git fetch origin 2>/dev/null
+
+LOCAL="$(git rev-parse HEAD)"
+REMOTE="$(git rev-parse "origin/$BRANCH")"
+
+if [[ "$LOCAL" == "$REMOTE" ]]; then
+    log "已是最新版本，无需同步"
+    exit 0
+fi
+
+# ===== 2. 显示更新内容 =====
+NEW_COMMITS=$(git log --oneline "$LOCAL..$REMOTE")
+COUNT=$(echo "$NEW_COMMITS" | wc -l | tr -d ' ')
+log "发现 $COUNT 个新提交:"
+echo ""
+echo "$NEW_COMMITS" | while read -r line; do
+    echo "  $line"
+done
+echo ""
+
+# ===== 3. 拉取更新 =====
+log "开始拉取更新..."
+
 if ! git pull --rebase 2>&1; then
-    log "同步失败，可能存在本地修改冲突 (分支: $BRANCH)"
+    log "拉取失败，可能存在本地修改冲突 (分支: $BRANCH)"
     read -p "是否丢弃本地所有修改，强制同步到云端最新版本？[y/N] " confirm
     if [[ "$confirm" =~ ^[Yy]$ ]]; then
-        git fetch origin
         git reset --hard "origin/$BRANCH"
         log "已重置到 origin/$BRANCH"
     else
@@ -36,7 +57,7 @@ fi
 
 log "仓库同步完成"
 
-# ===== 2. 重新生成 secrets.sh =====
+# ===== 4. 重新生成 secrets.sh =====
 if [[ ! -f "$ENC" ]]; then
     log "未找到 secrets.enc，跳过解密"
     exit 0
