@@ -29,19 +29,19 @@ local palette = {
 
 local chrome = {
    glass = palette.base,
-   -- Tab bar 背景（与 powerline 半圆边框背景一致）
-   tab_bar_bg = palette.crust,
+   -- Tab bar 半透明背景（与 tab-title / right-status 一致）
+   tab_bar_bg = 'rgba(0, 0, 0, 0.4)',
    tab = {
       active = {
-         bg = palette.sapphire,
+         bg = palette.mauve,
          fg = palette.crust,
       },
       hover = {
-         bg = palette.surface2,
+         bg = palette.surface1,
          fg = palette.text,
       },
       inactive = {
-         bg = palette.surface1,
+         bg = palette.surface0,
          fg = palette.subtext1,
       },
       unseen = palette.peach,
@@ -103,22 +103,21 @@ local terminal = {
       '#61D6D6',
       '#F2F2F2',
    },
-   -- tab bar 配色（powerline 风格）
+   -- tab bar 配色（简洁色块风格，半透明背景）
    tab_bar = {
-      background = palette.crust,
+      background = 'rgba(0, 0, 0, 0.4)',
       active_tab = {
-         bg_color = palette.sapphire,
+         bg_color = palette.mauve,
          fg_color = palette.crust,
       },
       inactive_tab = {
-         bg_color = palette.surface1,
+         bg_color = palette.surface0,
          fg_color = palette.subtext1,
       },
       inactive_tab_hover = {
-         bg_color = palette.surface2,
+         bg_color = palette.surface1,
          fg_color = palette.text,
       },
-      inactive_tab_edge = palette.surface0,
    },
    visual_bell = palette.surface0,
    indexed = {

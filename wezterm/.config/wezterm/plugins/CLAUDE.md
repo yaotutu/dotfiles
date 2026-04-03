@@ -7,13 +7,6 @@
 
 | ID | Time | T | Title | Read |
 |----|------|---|-------|------|
-| #3217 | 5:15 PM | 🔵 | WezTerm tab bar does not support true centering of tabs | ~288 |
-| #3208 | 4:52 PM | 🟣 | Added WezTerm plugin for right-click new-tab button to open Launcher | ~212 |
-| #3193 | 4:01 PM | 🔵 | WezTerm configuration loading depends on restart to apply changes | ~190 |
-| #3186 | 3:52 PM | 🔴 | WezTerm tab display and keyboard shortcuts fixed and working | ~295 |
-| #3182 | 3:48 PM | 🔴 | Fixed WezTerm tabs inconsistent display by unifying active/inactive format | ~244 |
-| #3178 | 3:46 PM | 🟣 | Added WezTerm keyboard shortcuts for config reload and launcher menu | ~257 |
-| #3177 | " | 🔴 | WezTerm tabs now show consistent process name format for both active and inactive states | ~263 |
-| #3172 | 3:38 PM | 🔴 | Fixed WezTerm tabs inconsistent display state by unifying tab format | ~243 |
-| #3171 | 3:36 PM | 🔵 | WezTerm tabs show different information based on active/inactive state | ~223 |
+| #3279 | 8:06 PM | 🔄 | Removed tabline.lua plugin and restructured WezTerm configuration | ~281 |
+| #3228 | 5:51 PM | 🟣 | Implemented bar.wezterm plugin as alternative tab bar solution | ~236 |
 </claude-mem-context>

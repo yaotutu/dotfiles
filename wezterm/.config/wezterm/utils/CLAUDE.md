@@ -14,5 +14,10 @@
 
 | ID | Time | T | Title | Read |
 |----|------|---|-------|------|
+| #3284 | 8:07 PM | 🔄 | Replaced tabline.wez plugin with custom native WezTerm tab bar implementation | ~276 |
+| #3283 | " | 🔄 | WezTerm tabline replaced with custom event-driven implementation | ~326 |
+| #3249 | 6:40 PM | 🟣 | Tab titles now intelligently display agent state, pane title, or process name with priority-based logic | ~266 |
+| #3247 | 6:38 PM | 🔄 | Simplified pane.lua tab title generation to return process name only | ~306 |
+| #3242 | 6:34 PM | 🟣 | Implemented custom right status bar using WezTerm native events | ~267 |
 | #3211 | 4:55 PM | ✅ | Removed launcher.lua utility file from WezTerm configuration | ~138 |
 </claude-mem-context>

@@ -22,7 +22,6 @@
 | ID | Time | T | Title | Read |
 |----|------|---|-------|------|
 | #3263 | 6:52 PM | 🟣 | Created custom right status bar handler with improved color management | ~327 |
-| #3262 | 6:51 PM | 🟣 | Implemented custom WezTerm tab title renderer with consistent display and proper color handling | ~337 |
 | #3260 | 6:50 PM | 🔄 | Refactored right status bar to use dynamic theme colors instead of hardcoded theme | ~372 |
 | #3255 | 6:44 PM | ✅ | Increased right padding in WezTerm right status bar | ~146 |
 | #3254 | " | ✅ | Increased right status bar initial padding from 1 to 3 spaces | ~172 |

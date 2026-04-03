@@ -7,16 +7,5 @@
 
 | ID | Time | T | Title | Read |
 |----|------|---|-------|------|
-| #3217 | 5:15 PM | 🔵 | WezTerm tab bar does not support true centering of tabs | ~288 |
-| #3212 | 4:58 PM | 🔵 | WezTerm configured to use macOS native fullscreen mode by default | ~214 |
-| #3199 | 4:17 PM | 🟣 | Added Cmd+F keyboard shortcut to toggle macOS native fullscreen in WezTerm | ~173 |
-| #3198 | " | ✅ | Enabled macOS native fullscreen mode for WezTerm | ~186 |
-| #3195 | 4:04 PM | 🟣 | Added intelligent domain inheritance for new tabs in WezTerm | ~254 |
-| #3186 | 3:52 PM | 🔴 | WezTerm tab display and keyboard shortcuts fixed and working | ~295 |
-| #3182 | 3:48 PM | 🔴 | Fixed WezTerm tabs inconsistent display by unifying active/inactive format | ~244 |
-| #3178 | 3:46 PM | 🟣 | Added WezTerm keyboard shortcuts for config reload and launcher menu | ~257 |
-| #3176 | " | 🔵 | WezTerm keybindings ARE manually defined in bindings.lua | ~207 |
-| #3175 | 3:45 PM | 🟣 | Added WezTerm keybindings for config reload and launcher menu | ~239 |
-| #3174 | 3:44 PM | 🔴 | Added missing Cmd+Shift keyboard shortcuts to WezTerm configuration | ~263 |
-| #3171 | 3:36 PM | 🔵 | WezTerm tabs show different information based on active/inactive state | ~223 |
+| #3279 | 8:06 PM | 🔄 | Removed tabline.lua plugin and restructured WezTerm configuration | ~281 |
 </claude-mem-context>

@@ -7,8 +7,13 @@
 
 | ID | Time | T | Title | Read |
 |----|------|---|-------|------|
+| #3279 | 8:06 PM | 🔄 | Removed tabline.lua plugin and restructured WezTerm configuration | ~281 |
+| #3243 | 6:35 PM | 🟣 | Added custom tab bar color overrides for better visual distinction between active and inactive tabs | ~271 |
+| #3237 | 6:16 PM | 🟣 | Added custom tab color overrides to enhance active/inactive tab visual distinction | ~292 |
+| #3221 | 5:19 PM | 🔄 | Refactored WezTerm tab display architecture from tabline to separate tab-title plugin | ~234 |
 | #3214 | 5:03 PM | 🔵 | WezTerm configuration uses modular builder pattern with plugin integration | ~306 |
 | #3210 | 4:53 PM | 🔄 | Removed unused WezTerm handlers directory and files | ~188 |
 | #3207 | 4:47 PM | ✅ | Changed WezTerm startup behavior from maximized window to macOS native fullscreen | ~217 |
+| #3206 | 4:43 PM | ✅ | Renamed WezTerm entry file from init.lua to wezterm.lua | ~217 |
 | #3200 | 4:24 PM | 🟣 | Added auto-fullscreen on WezTerm startup | ~176 |
 </claude-mem-context>

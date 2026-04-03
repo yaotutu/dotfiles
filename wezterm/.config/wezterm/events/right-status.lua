@@ -1,6 +1,6 @@
--- 自定义右侧状态栏
--- 显示: 位置(domain+workspace) │ agent计数 │ 模式 │ 时钟
--- 颜色从 resolved_palette 动态读取，跟随主题
+-- 自定义右侧状态栏（标签风格）
+-- 显示: 位置 │ agent 计数 │ 模式 │ 时钟
+-- 彩色标签块 + 半透明背景，与 tab 风格统一
 
 local wezterm = require('wezterm')
 local agent_deck = wezterm.plugin.require('https://github.com/Eric162/wezterm-agent-deck')
@@ -8,83 +8,81 @@ local pane_utils = require('utils.pane')
 
 local M = {}
 
--- 添加一个状态栏段落（自动插入分隔符）
-local function add_part(items, text, color)
-   if #items > 1 then
-      table.insert(items, { Foreground = { Color = color.dim } })
-      table.insert(items, { Text = '   │   ' })
-   end
+-- 与 tab-title 一致的 tab bar 背景
+local TAB_BAR_BG = 'rgba(0, 0, 0, 0.4)'
 
-   table.insert(items, { Foreground = { Color = color.fg } })
-   table.insert(items, { Text = text })
+-- 标签颜色
+local TAG_COLORS = {
+   location = { bg = '#313244', fg = '#cdd6f4' },  -- surface0 / text
+   working  = { bg = '#313244', fg = '#a6e3a1' },  -- surface0 / green
+   waiting  = { bg = '#313244', fg = '#f9e2af' },  -- surface0 / yellow
+   mode     = { bg = '#cba6f7', fg = '#11111b' },  -- mauve / crust（与 active tab 呼应）
+   clock    = { bg = '#313244', fg = '#a6adc8' },  -- surface0 / subtext0
+}
+
+---添加一个彩色标签
+---@param items table 格式化数组
+---@param text string 标签文本
+---@param tag_bg string 标签背景色
+---@param tag_fg string 标签前景色
+local function add_tag(items, text, tag_bg, tag_fg)
+   -- 间距（tab bar 背景色）
+   table.insert(items, { Background = { Color = TAB_BAR_BG } })
+   table.insert(items, { Text = ' ' })
+   -- 标签内容
+   table.insert(items, { Background = { Color = tag_bg } })
+   table.insert(items, { Foreground = { Color = tag_fg } })
+   table.insert(items, { Text = ' ' .. text .. ' ' })
 end
 
-local function build_right_status(window, pane, palette)
+local function build_right_status(window, pane)
    pane_utils.refresh_agent_states(window, agent_deck)
 
-   -- 状态栏颜色从 palette 读取
-   local color = {
-      fg = palette.foreground,
-      dim = palette.ansi[8],     -- 灰色，用于分隔符
-      quiet = palette.ansi[8],   -- 灰色，用于时钟
-      wait = palette.ansi[4],    -- 蓝色，用于 waiting
-      work = palette.ansi[3],    -- 绿色，用于 working
-      mode = palette.ansi[5],    -- 洋红，用于模式
-   }
-
-   local items = {
-      { Text = '   ' },
-   }
+   local items = {}
 
    -- 位置标签（domain + workspace）
-   add_part(items, pane_utils.get_location_label(pane, window), { fg = color.fg, dim = color.dim })
+   add_tag(items, pane_utils.get_location_label(pane, window),
+      TAG_COLORS.location.bg, TAG_COLORS.location.fg)
 
-   -- agent 计数
+   -- Agent 计数
    local counts = agent_deck.count_agents_by_status()
    if counts then
       local waiting = counts.waiting or 0
       local working = counts.working or 0
-
       if waiting > 0 then
-         add_part(items, '◔ ' .. waiting, { fg = color.wait, dim = color.dim })
+         add_tag(items, '◔ ' .. waiting, TAG_COLORS.waiting.bg, TAG_COLORS.waiting.fg)
       end
-
       if working > 0 then
-         add_part(items, '● ' .. working, { fg = color.work, dim = color.dim })
+         add_tag(items, '● ' .. working, TAG_COLORS.working.bg, TAG_COLORS.working.fg)
       end
    end
 
    -- 模式标签
    local mode = pane_utils.get_mode_label(window)
    if mode then
-      add_part(items, mode, { fg = color.mode, dim = color.dim })
+      add_tag(items, mode, TAG_COLORS.mode.bg, TAG_COLORS.mode.fg)
    end
 
    -- 时钟
-   add_part(items, wezterm.strftime('%H:%M'), { fg = color.quiet, dim = color.dim })
-   table.insert(items, { Text = '   ' })
+   add_tag(items, wezterm.strftime('%H:%M'), TAG_COLORS.clock.bg, TAG_COLORS.clock.fg)
+
+   -- 右侧闭合间距
+   table.insert(items, { Background = { Color = TAB_BAR_BG } })
+   table.insert(items, { Text = ' ' })
 
    return wezterm.format(items)
 end
 
 M.setup = function()
    wezterm.on('update-right-status', function(window, pane)
-      local ok, conf = pcall(window.effective_config, window)
-      if not ok then
-         return
-      end
-
-      local palette = conf.resolved_palette
-      local ok2, formatted = pcall(build_right_status, window, pane, palette)
-
+      local ok, formatted = pcall(build_right_status, window, pane)
       local text
-      if ok2 then
+      if ok then
          text = formatted
       else
          wezterm.log_error('right-status error: ' .. tostring(formatted))
          text = wezterm.format({ { Text = ' [err] ' } })
       end
-
       window:set_right_status(text)
    end)
 end

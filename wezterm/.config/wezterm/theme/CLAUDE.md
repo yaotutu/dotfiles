@@ -7,7 +7,8 @@
 
 | ID | Time | T | Title | Read |
 |----|------|---|-------|------|
-| #3217 | 5:15 PM | 🔵 | WezTerm tab bar does not support true centering of tabs | ~288 |
-| #3216 | 5:13 PM | 🔵 | Reviewed Catppuccin theme configuration structure | ~255 |
+| #3279 | 8:06 PM | 🔄 | Removed tabline.lua plugin and restructured WezTerm configuration | ~281 |
+| #3276 | 8:03 PM | ✅ | Added explicit tab_bar color configuration to Catppuccin theme | ~274 |
+| #3274 | 8:02 PM | ✅ | Updated WezTerm Catppuccin theme tab bar colors for better visual hierarchy | ~276 |
 | #3213 | 4:59 PM | ✅ | Increased WezTerm top window padding from 12 to 30 pixels | ~205 |
 </claude-mem-context>
