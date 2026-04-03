@@ -1,0 +1,43 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+# ----------------------------------------------------------------------
+# tutu-init — 初始化 dotfiles 依赖工具（支持 brew / apt）
+# 用法: tutu-init
+# ----------------------------------------------------------------------
+log() { echo "[$(date '+%H:%M:%S')] $*"; }
+
+# 检测包管理器
+if [[ "$OSTYPE" == darwin* ]]; then
+    INSTALL="brew install"
+else
+    INSTALL="sudo apt install -y"
+fi
+
+# 工具列表（命令名:包名）
+TOOLS=(
+    "eza:eza"
+    "git:git"
+    "autojump:autojump"
+)
+
+installed=0
+skipped=0
+
+for entry in "${TOOLS[@]}"; do
+    cmd="${entry%%:*}"
+    pkg="${entry##*:}"
+
+    if command -v "$cmd" &>/dev/null; then
+        log "$cmd 已安装，跳过"
+        ((skipped++))
+        continue
+    fi
+
+    log "安装 $cmd ($pkg)..."
+    $INSTALL "$pkg"
+    ((installed++))
+done
+
+echo ""
+log "完成: 新安装 $installed 个，跳过 $skipped 个个"

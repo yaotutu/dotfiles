@@ -1,0 +1,67 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+# ----------------------------------------------------------------------
+# tutu-kp — 杀掉占用指定端口的进程
+# 用法: tutu-kp <port>
+# ----------------------------------------------------------------------
+port="${1:-}"
+
+if [[ -z "$port" ]]; then
+    echo "用法: tutu-kp <port>"
+    exit 1
+fi
+
+# 检查端口是否合法
+if ! [[ "$port" =~ ^[0-9]+$ ]] || [[ "$port" -lt 1 || "$port" -gt 65535 ]]; then
+    echo "无效端口号: $port (范围 1-65535)"
+    exit 1
+fi
+
+# 查找占用端口的进程
+pids=$(lsof -ti :"$port" 2>/dev/null || true)
+
+if [[ -z "$pids" ]]; then
+    echo "端口 $port 未被占用"
+    exit 0
+fi
+
+# 显示占用详情
+echo "端口 $port 被以下进程占用:"
+echo ""
+lsof -i :"$port" -P -n 2>/dev/null | awk 'NR==1 || !seen[$2]++ {print}'
+echo ""
+
+# 确认
+read -p "确认杀掉以上进程？[Y/n] " confirm
+if [[ "${confirm:-y}" =~ ^[Nn]$ ]]; then
+    echo "已取消"
+    exit 0
+fi
+
+# 先尝试优雅退出
+kill $pids 2>/dev/null || true
+
+sleep 1
+
+# 检查是否还有存活进程
+still_alive=""
+for p in $pids; do
+    if kill -0 "$p" 2>/dev/null; then
+        still_alive="$still_alive $p"
+    fi
+done
+
+if [[ -n "$still_alive" ]]; then
+    echo "进程未响应，强制终止$still_alive"
+    kill -9 $still_alive 2>/dev/null || true
+fi
+
+# 验证端口已释放
+sleep 0.5
+if lsof -ti :"$port" &>/dev/null; then
+    echo "警告: 端口 $port 仍被占用"
+    exit 1
+fi
+
+echo "端口 $port 已释放"
