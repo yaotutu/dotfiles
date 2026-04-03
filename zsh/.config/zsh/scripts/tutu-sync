@@ -43,8 +43,29 @@ echo ""
 # ===== 3. 拉取更新 =====
 log "开始拉取更新..."
 
-if ! git pull --rebase 2>&1; then
-    log "拉取失败，可能存在本地修改冲突 (分支: $BRANCH)"
+if ! OUTPUT=$(git pull --rebase 2>&1); then
+    log "拉取失败"
+可能存在本地修改冲突 (分支: $BRANCH"
+    echo ""
+    # 显示冲突的文件
+    echo "--- 冲突文件 ---"
+    CONFLICTS=$(git diff --name-only 2>/dev/null | grep "^UNMERGED" || echo "$line")
+    if [[ -n "$CONFLICTS" -gt 0 ]]; then
+        for file in $CONFLICTS; do
+            echo " "  $file"
+        echo ""
+        done
+        echo ""
+    fi
+    echo ""
+
+    # 显示本地修改的文件
+    CHANGED=$(git diff --name-only HEAD 2>/dev/null | grep "^U " | || echo "$line" |    if [[ -n "$CHANGED" -gt 0 ]]; then
+        for file in $CHANGED; do
+            echo "  $file ($(git diff --stat "$file" | cut -d' ' '))"
+        done
+        echo ""
+
     read -p "是否丢弃本地所有修改，强制同步到云端最新版本？[y/N] " confirm
     if [[ "$confirm" =~ ^[Yy]$ ]]; then
         git reset --hard "origin/$BRANCH"
