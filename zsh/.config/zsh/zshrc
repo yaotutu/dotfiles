@@ -1,47 +1,57 @@
 # ----------------------------------------------------------------------
-# ~/.config/zsh/zshrc (简洁优化版)
+# ~/.config/zsh/zshrc
 # ----------------------------------------------------------------------
 
-# 1. PATH & 工具初始化
-source "$HOME/.config/zsh/paths.zsh"
+# ===== PATH =====
+export PATH="$HOME/.local/bin:$HOME/.config/zsh/scripts:$PATH"
 
-
-# 1.1. 机器特定配置（本地入口，不依赖 hostname）
+# ===== 机器特定配置 =====
 LOCAL_ENTRY="$HOME/.config/zsh/host.local.zsh"
 [[ -r "$LOCAL_ENTRY" ]] && source "$LOCAL_ENTRY"
 
-# 2. Zinit 插件系统加载
+# ===== Zinit 插件系统 =====
 source "$HOME/.config/zsh/zinit.zsh"
 
-# 3. 🎯 立即加载关键配置 - secrets.sh 必须立即可用
+# ===== 密钥（必须在 agents.zsh 之前） =====
 [[ -f "$HOME/.config/zsh/secrets.sh" ]] && source "$HOME/.config/zsh/secrets.sh"
 
-# 4. 加载自定义配置和函数
-[[ -r "$HOME/.config/zsh/functions.zsh" ]] && source "$HOME/.config/zsh/functions.zsh"
+# ===== AI Agent 启动器 =====
+[[ -r "$HOME/.config/zsh/agents.zsh" ]] && source "$HOME/.config/zsh/agents.zsh"
 
-# 5. 通用 alias（建议独立文件）
+# ===== Alias =====
 [[ -r "$HOME/.config/zsh/aliases.zsh" ]] && source "$HOME/.config/zsh/aliases.zsh"
 
-# 6. 键位绑定（务必放最后，防止插件覆盖）
-[[ -r "$HOME/.config/zsh/keybindings.zsh" ]] && source "$HOME/.config/zsh/keybindings.zsh"
+# ===== 自定义函数 =====
+# 以当前目录名作为会话名，自动 attach 或 create Zellij 会话
+function zj() {
+    local session_name="${PWD:t}"
+    [[ -z "$session_name" ]] && session_name="root"
+    zellij attach --create "$session_name"
+}
 
-
-
-# ===== Shared history across all zsh sessions =====
+# ===== 历史记录 =====
 export HISTFILE="$HOME/.zsh_history"
 export HISTSIZE=200000
 export SAVEHIST=200000
 
 setopt APPEND_HISTORY          # 追加写历史（不覆盖）
 setopt INC_APPEND_HISTORY      # 每条命令执行后立刻写入历史文件
-setopt SHARE_HISTORY           # 所有会话共享历史（会读入其他会话的新增历史）
-
-# ===== Optional: make history nicer (recommended) =====
-setopt EXTENDED_HISTORY        # 记录时间戳等信息
-setopt HIST_IGNORE_ALL_DUPS    # 历史里去重（更强）
+setopt SHARE_HISTORY           # 所有会话共享历史
+setopt EXTENDED_HISTORY        # 记录时间戳
+setopt HIST_IGNORE_ALL_DUPS    # 去重
 setopt HIST_SAVE_NO_DUPS       # 写入历史文件时也去重
 setopt HIST_REDUCE_BLANKS      # 去掉多余空格
-setopt HIST_VERIFY             # 历史展开（!等）先显示再执行，防手滑
-
-# （可选）多会话同时写历史时更稳一点（不同系统/版本支持不同）
+setopt HIST_VERIFY             # 历史展开先显示再执行
 setopt HIST_FCNTL_LOCK 2>/dev/null
+
+# ===== 实用选项 =====
+setopt AUTO_CD                # 输入目录名直接 cd
+setopt NOCLOBBER              # > 不覆盖已有文件（用 >! 强制）
+setopt CORRECT                # 命令拼写纠正
+
+# ===== 键位绑定（放最后，防止插件覆盖） =====
+# ↑/↓：按当前输入前缀搜索历史
+bindkey '^[[A' history-beginning-search-backward
+bindkey '^[[B' history-beginning-search-forward
+bindkey '\eOA' history-beginning-search-backward
+bindkey '\eOB' history-beginning-search-forward
