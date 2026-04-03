@@ -1,0 +1,61 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+# ----------------------------------------------------------------------
+# tutu-sync — 同步 dotfiles 仓库并重新生成 secrets.sh
+# 用法: tutu-sync
+# ----------------------------------------------------------------------
+SCRIPT_DIR="$(cd "$(dirname "$(realpath "${BASH_SOURCE[0]}")")" && pwd)"
+CONFIG_DIR="$(dirname "$SCRIPT_DIR")"
+REPO_ROOT="$(git -C "$SCRIPT_DIR" rev-parse --show-toplevel)"
+
+SECRETS="$CONFIG_DIR/secrets.sh"
+ENC="$CONFIG_DIR/secrets.enc"
+PASSFILE="$SCRIPT_DIR/.secret_password"
+
+log() { echo "[$(date '+%H:%M:%S')] $*"; }
+
+# ===== 1. 同步 git =====
+log "开始同步 dotfiles 仓库..."
+cd "$REPO_ROOT"
+
+BRANCH="$(git branch --show-current)"
+
+if ! git pull --rebase 2>&1; then
+    log "同步失败，可能存在本地修改冲突 (分支: $BRANCH)"
+    read -p "是否丢弃本地所有修改，强制同步到云端最新版本？[y/N] " confirm
+    if [[ "$confirm" =~ ^[Yy]$ ]]; then
+        git fetch origin
+        git reset --hard "origin/$BRANCH"
+        log "已重置到 origin/$BRANCH"
+    else
+        log "用户取消同步"
+        exit 1
+    fi
+fi
+
+log "仓库同步完成"
+
+# ===== 2. 重新生成 secrets.sh =====
+if [[ ! -f "$ENC" ]]; then
+    log "未找到 secrets.enc，跳过解密"
+    exit 0
+fi
+
+if [[ ! -f "$PASSFILE" ]]; then
+    log "未找到解密密码，请先运行 manage_secrets.sh"
+    exit 1
+fi
+
+rm -f "$SECRETS"
+PASSWORD=$(cat "$PASSFILE")
+
+if ! openssl enc -d -aes-256-cbc -salt -pbkdf2 \
+    -in "$ENC" -out "$SECRETS" -pass pass:"$PASSWORD"; then
+    log "解密失败，可能是密码错误或文件损坏"
+    rm -f "$SECRETS"
+    exit 1
+fi
+
+chmod 600 "$SECRETS"
+log "secrets.sh 已重新生成"
