@@ -8,4 +8,5 @@
 | ID | Time | T | Title | Read |
 |----|------|---|-------|------|
 | #3279 | 8:06 PM | 🔄 | Removed tabline.lua plugin and restructured WezTerm configuration | ~281 |
+| #3212 | 4:58 PM | 🔵 | WezTerm configured to use macOS native fullscreen mode by default | ~214 |
 </claude-mem-context>

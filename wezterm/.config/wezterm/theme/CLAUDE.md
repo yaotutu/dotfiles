@@ -7,8 +7,8 @@
 
 | ID | Time | T | Title | Read |
 |----|------|---|-------|------|
+| #3288 | 8:42 PM | ✅ | WezTerm tab bar styling changed from powerline to simple color blocks | ~345 |
 | #3279 | 8:06 PM | 🔄 | Removed tabline.lua plugin and restructured WezTerm configuration | ~281 |
-| #3276 | 8:03 PM | ✅ | Added explicit tab_bar color configuration to Catppuccin theme | ~274 |
-| #3274 | 8:02 PM | ✅ | Updated WezTerm Catppuccin theme tab bar colors for better visual hierarchy | ~276 |
+| #3267 | 6:57 PM | 🔄 | Removed manual tab_bar styling from catppuccin theme to let tabline plugin handle it | ~251 |
 | #3213 | 4:59 PM | ✅ | Increased WezTerm top window padding from 12 to 30 pixels | ~205 |
 </claude-mem-context>
