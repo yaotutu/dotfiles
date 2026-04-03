@@ -7,11 +7,11 @@ alias zjka='zellij kill-all-sessions' # 杀掉所有会话
 
 # === 文件操作 ===
 if command -v eza &>/dev/null; then
-    alias ls='eza'                     # 用 eza 替代 ls
-    alias ll='eza -lh'                 # 长格式，人类可读大小
-    alias la='eza -lAh'                # 长格式，含隐藏文件
-    alias lt='eza -lht'                # 按修改时间排序
-    alias lt='eza --tree --level=2'    # 目录树
+    alias ls='eza --icons'                        # 用 eza 替代 ls，带图标
+    alias ll='eza -lh --icons --git'               # 长格式，人类可读大小，带图标和 git 状态
+    alias la='eza -lAh --icons --git'              # 长格式，含隐藏文件，带图标和 git 状态
+    alias lt='eza -lh --sort=modified --icons'     # 按修改时间排序，带图标
+    alias tree='eza --tree --level=2 --icons'      # 目录树，带图标
 else
     alias ll='ls -lh'
     alias la='ls -lAh'
