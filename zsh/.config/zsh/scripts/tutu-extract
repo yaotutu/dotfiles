@@ -1,0 +1,34 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+# ----------------------------------------------------------------------
+# tutu-extract — 智能解压，自动识别压缩格式
+# 用法: tutu-extract <文件>
+# ----------------------------------------------------------------------
+file="${1:-}"
+
+if [[ -z "$file" ]]; then
+    echo "用法: tutu-extract <压缩文件>"
+    exit 1
+fi
+
+if [[ ! -f "$file" ]]; then
+    echo "文件不存在: $file"
+    exit 1
+fi
+
+case "$file" in
+    *.tar.bz2|*.tbz2)  tar xjf "$file" ;;
+    *.tar.gz|*.tgz)    tar xzf "$file" ;;
+    *.tar.xz)          tar xJf "$file" ;;
+    *.bz2)             bunzip2 "$file" ;;
+    *.rar)             unrar x "$file" ;;
+    *.gz)              gunzip "$file" ;;
+    *.tar)             tar xf "$file" ;;
+    *.zip)             unzip "$file" ;;
+    *.Z)               uncompress "$file" ;;
+    *.7z)              7z x "$file" ;;
+    *)                 echo "不支持的格式: $file"; exit 1 ;;
+esac
+
+echo "已解压: $file"

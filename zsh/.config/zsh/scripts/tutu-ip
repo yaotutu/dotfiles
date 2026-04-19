@@ -1,0 +1,28 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+# ----------------------------------------------------------------------
+# tutu-ip — 显示本机内网和公网 IP
+# 用法: tutu-ip
+# ----------------------------------------------------------------------
+
+# 内网 IP
+echo "内网 IP:"
+if command -v ip &>/dev/null; then
+    ip -4 addr show | grep -oP '(?<=inet\s)\d+(\.\d+){3}' | grep -v '127.0.0.1' | while read -r ip; do
+    echo "  $ip"
+done
+else
+    # macOS 用 ifconfig
+    ifconfig 2>/dev/null | grep "inet " | grep -v 127.0.0.1 | awk '{print "  " $2}'
+fi
+
+# 公网 IP
+echo ""
+echo "公网 IP:"
+public_ip=$(curl -s --max-time 5 https://api.ipify.org 2>/dev/null || true)
+if [[ -n "$public_ip" ]]; then
+    echo "  $public_ip"
+else
+    echo "  无法获取（网络不可达）"
+fi

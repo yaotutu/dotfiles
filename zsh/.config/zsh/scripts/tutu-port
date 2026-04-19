@@ -1,0 +1,29 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+# ----------------------------------------------------------------------
+# tutu-port — 查看占用指定端口的进程详情
+# 用法: tutu-port <port>
+# ----------------------------------------------------------------------
+port="${1:-}"
+
+if [[ -z "$port" ]]; then
+    echo "用法: tutu-port <port>"
+    exit 1
+fi
+
+# 检查端口是否合法
+if ! [[ "$port" =~ ^[0-9]+$ ]] || [[ "$port" -lt 1 || "$port" -gt 65535 ]]; then
+    echo "无效端口号: $port (范围 1-65535)"
+    exit 1
+fi
+
+# 查找占用端口的进程
+if ! lsof -i :"$port" -P -n &>/dev/null; then
+    echo "端口 $port 未被占用"
+    exit 0
+fi
+
+echo "端口 $port 占用详情:"
+echo ""
+lsof -i :"$port" -P -n

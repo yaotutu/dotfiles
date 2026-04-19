@@ -25,6 +25,9 @@ alias gd='git diff'
 alias ga='git add'
 alias gp='git push'
 
+# === 目录操作 ===
+alias mkcd='mkdir -p && cd'         # 创建目录并进入（用法: mkcd dir）
+
 # === 目录跳转 ===
 alias ...='cd ../..'
 alias ....='cd ../../..'

@@ -1,0 +1,14 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+# ----------------------------------------------------------------------
+# tutu-weather — 终端显示天气
+# 用法: tutu-weather [城市名]  默认自动定位
+# ----------------------------------------------------------------------
+city="${1:-}"
+
+if [[ -n "$city" ]]; then
+    curl -s "wttr.in/${city}?lang=zh"
+else
+    curl -s "wttr.in/?lang=zh"
+fi

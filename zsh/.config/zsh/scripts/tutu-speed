@@ -1,0 +1,24 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+# ----------------------------------------------------------------------
+# tutu-speed — 终端简易网速测试（下载速度）
+# 用法: tutu-speed
+# ----------------------------------------------------------------------
+
+echo "正在测试下载速度..."
+
+# 使用 Cloudflare 的测速文件，下载 10MB
+result=$(curl -o /dev/null -w '%{speed_download}' --max-time 10 -s https://speed.cloudflare.com/__down?bytes=10000000 2>/dev/null || true)
+
+if [[ -z "$result" ]]; then
+    echo "测速失败，请检查网络连接"
+    exit 1
+fi
+
+# 转换为 MB/s
+speed_bytes=$(echo "$result" | cut -d'.' -f1)
+speed_mb=$(echo "scale=2; $speed_bytes / 1048576" | bc 2>/dev/null || echo "0")
+
+echo ""
+echo "下载速度: ${speed_mb} MB/s"
