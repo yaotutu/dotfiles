@@ -47,5 +47,3 @@ elif [[ "$OSTYPE" == linux-gnu* ]]; then
     [ -f /etc/profile.d/autojump.sh ] && . /etc/profile.d/autojump.sh
 fi
 
-# ⚠️ 不再使用这个，避免重复和安装脚本没跑的问题
-# zinit light wting/autojump
