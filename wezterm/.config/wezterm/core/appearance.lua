@@ -14,6 +14,12 @@ return {
    color_scheme = 'Catppuccin Mocha',
    colors = colors,
 
+   -- 命令面板（Cmd+Shift+P）
+   command_palette_bg_color = theme.palette.mantle,
+   command_palette_fg_color = theme.palette.text,
+   command_palette_rows = 12,
+   command_palette_font_size = 14,
+
    -- 背景设置
    background = {
       {

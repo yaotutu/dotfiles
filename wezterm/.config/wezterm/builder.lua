@@ -12,7 +12,7 @@ local function merge_options(options, new_options, source)
 end
 
 function M.build(module_names)
-   local options = {}
+   local options = wezterm.config_builder()
 
    for _, module_name in ipairs(module_names) do
       local module_options = require(module_name)

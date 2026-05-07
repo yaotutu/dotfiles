@@ -56,6 +56,87 @@ local function check_unseen(panes)
    return false
 end
 
+local function escape_pattern(text)
+   return (text:gsub('([^%w])', '%%%1'))
+end
+
+local function trim(text)
+   return text:match('^%s*(.-)%s*$')
+end
+
+local function basename(path)
+   local value = trim(path or '')
+   value = value:gsub('/+$', '')
+
+   if value == '' then
+      return ''
+   end
+
+   if value == '~' or value == '/' then
+      return value
+   end
+
+   return value:match('([^/\\]+)$') or value
+end
+
+local function parse_remote_title(title)
+   if not title or title == '' then
+      return nil, nil
+   end
+
+   local value = trim(title)
+   local user = os.getenv('USER') or ''
+
+   if user ~= '' then
+      local host, path = value:match('^(.-)%.' .. escape_pattern(user) .. ':(.+)$')
+      if host and host ~= '' then
+         return host, basename(path)
+      end
+   end
+
+   local _ssh_user, host, path = value:match('^([^@:%s]+)@([^:]+):(.+)$')
+   if host and host ~= '' then
+      return host, basename(path)
+   end
+
+   return nil, nil
+end
+
+local function remote_prefix(domain, pane)
+   if domain ~= 'local' then
+      return domain
+   end
+
+   local host = parse_remote_title(pane_utils.get_pane_title(pane))
+   return host
+end
+
+local function clean_auto_title(title)
+   local _host, path = parse_remote_title(title)
+   if path and path ~= '' then
+      return path
+   end
+
+   return title
+end
+
+local function get_title_label(tab, pane, agent_state)
+   local manual_title = tab.tab_title
+   local domain = pane_utils.get_domain_name(pane)
+   local prefix = remote_prefix(domain, pane)
+   if prefix and prefix ~= '' then
+      prefix = prefix .. ' · '
+   else
+      prefix = ''
+   end
+
+   if manual_title and manual_title ~= '' then
+      return prefix .. manual_title
+   end
+
+   return prefix .. clean_auto_title(pane_utils.get_title_label(pane, agent_state))
+end
+
 M.setup = function()
    wezterm.on('format-tab-title', function(tab, _tabs, _panes, _conf, hover, max_width)
       local pane = pane_utils.get_active_pane(tab)
@@ -70,7 +151,7 @@ M.setup = function()
       pcall(agent_deck.update_pane, pane)
 
       local active_state = agent_deck.get_agent_state(tab.active_pane.pane_id)
-      local process_name = pane_utils.get_title_label(pane, active_state)
+      local title = get_title_label(tab, pane, active_state)
       local has_unseen = check_unseen(tab.panes)
       local index = tab.tab_index + 1
 
@@ -97,8 +178,8 @@ M.setup = function()
          table.insert(cells, { Foreground = { Color = c.fg } })
       end
 
-      -- 进程名
-      table.insert(cells, { Text = process_name })
+      -- 标题文本：手动命名优先，否则使用原来的智能标题
+      table.insert(cells, { Text = title })
 
       -- 未读标记
       if has_unseen then

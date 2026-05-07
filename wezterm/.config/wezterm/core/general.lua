@@ -4,7 +4,7 @@ return {
    exit_behavior = 'CloseOnCleanExit', -- if the shell program exited with a successful status
    exit_behavior_messaging = 'Verbose',
 
-   scrollback_lines = 5000,
+   scrollback_lines = 20000,
 
    hyperlink_rules = {
       -- Matches: a URL in parens: (URL)
