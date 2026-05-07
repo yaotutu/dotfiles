@@ -7,5 +7,11 @@
 
 | ID | Time | T | Title | Read |
 |----|------|---|-------|------|
-| #5769 | 10:20 PM | 🔵 | Secrets management system for API credentials | ~255 |
+| #5783 | 10:50 PM | 🟣 | Added intelligent secrets re-decryption to tutu-sync script | ~311 |
+| #5782 | 10:49 PM | 🔵 | Conflict resolution with user confirmation already implemented | ~259 |
+| #5781 | 10:48 PM | 🔴 | Refactored git conflict and changed file detection logic | ~328 |
+| #5780 | " | 🔵 | Multiple additional syntax errors found in tutu-sync script | ~276 |
+| #5779 | 10:47 PM | 🔴 | Fixed conditional syntax error in conflict detection logic | ~264 |
+| #5778 | " | 🔴 | Fixed syntax error in tutu-sync script line 48 | ~228 |
+| #5777 | " | 🔵 | Syntax error root cause identified in tutu-sync script | ~258 |
 </claude-mem-context>

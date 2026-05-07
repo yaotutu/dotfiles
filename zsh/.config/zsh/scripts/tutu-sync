@@ -25,69 +25,99 @@ git fetch origin 2>/dev/null
 LOCAL="$(git rev-parse HEAD)"
 REMOTE="$(git rev-parse "origin/$BRANCH")"
 
-if [[ "$LOCAL" == "$REMOTE" ]]; then
-    log "已是最新版本，无需同步"
-    exit 0
-fi
-
-# ===== 2. 显示更新内容 =====
-NEW_COMMITS=$(git log --oneline "$LOCAL..$REMOTE")
-COUNT=$(echo "$NEW_COMMITS" | wc -l | tr -d ' ')
-log "发现 $COUNT 个新提交:"
-echo ""
-echo "$NEW_COMMITS" | while read -r line; do
-    echo "  $line"
-done
-echo ""
-
-# ===== 3. 拉取更新 =====
-log "开始拉取更新..."
-
-if ! OUTPUT=$(git pull --rebase 2>&1); then
-    log "拉取失败"
-可能存在本地修改冲突 (分支: $BRANCH"
+GIT_UPDATED=false
+if [[ "$LOCAL" != "$REMOTE" ]]; then
+    # ===== 2. 显示更新内容 =====
+    NEW_COMMITS=$(git log --oneline "$LOCAL..$REMOTE")
+    COUNT=$(echo "$NEW_COMMITS" | wc -l | tr -d ' ')
+    log "发现 $COUNT 个新提交:"
     echo ""
-    # 显示冲突的文件
-    echo "--- 冲突文件 ---"
-    CONFLICTS=$(git diff --name-only 2>/dev/null | grep "^UNMERGED" || echo "$line")
-    if [[ -n "$CONFLICTS" -gt 0 ]]; then
-        for file in $CONFLICTS; do
-            echo " "  $file"
-        echo ""
-        done
-        echo ""
-    fi
+    echo "$NEW_COMMITS" | while read -r line; do
+        echo "  $line"
+    done
     echo ""
 
-    # 显示本地修改的文件
-    CHANGED=$(git diff --name-only HEAD 2>/dev/null | grep "^U " | || echo "$line" |    if [[ -n "$CHANGED" -gt 0 ]]; then
-        for file in $CHANGED; do
-            echo "  $file ($(git diff --stat "$file" | cut -d' ' '))"
-        done
+    # ===== 3. 拉取更新 =====
+    log "开始拉取更新..."
+
+    if ! OUTPUT=$(git pull --rebase 2>&1); then
+        log "拉取失败"
+        log "可能存在本地修改冲突 (分支: $BRANCH)"
+        echo ""
+        # 显示冲突的文件
+        echo "--- 冲突文件 ---"
+        CONFLICTS=$(git diff --name-only --diff-filter=U 2>/dev/null)
+        if [[ -n "$CONFLICTS" ]]; then
+            echo "$CONFLICTS" | while read -r file; do
+                echo "  $file"
+            done
+            echo ""
+        else
+            echo "  (无)"
+            echo ""
+        fi
         echo ""
 
-    read -p "是否丢弃本地所有修改，强制同步到云端最新版本？[y/N] " confirm
-    if [[ "$confirm" =~ ^[Yy]$ ]]; then
-        git reset --hard "origin/$BRANCH"
-        log "已重置到 origin/$BRANCH"
-    else
-        log "用户取消同步"
-        exit 1
+        # 显示本地修改的文件
+        echo "--- 本地修改的文件 ---"
+        CHANGED=$(git diff --name-only HEAD 2>/dev/null)
+        if [[ -n "$CHANGED" ]]; then
+            echo "$CHANGED" | while read -r file; do
+                echo "  $file"
+            done
+            echo ""
+        else
+            echo "  (无)"
+            echo ""
+        fi
+        echo ""
+
+        read -p "是否丢弃本地所有修改，强制同步到云端最新版本？[y/N] " confirm
+        if [[ "$confirm" =~ ^[Yy]$ ]]; then
+            git reset --hard "origin/$BRANCH"
+            log "已重置到 origin/$BRANCH"
+        else
+            log "用户取消同步"
+            exit 1
+        fi
     fi
+
+    GIT_UPDATED=true
+    log "仓库同步完成"
 fi
 
-log "仓库同步完成"
-
-# ===== 4. 重新生成 secrets.sh =====
+# ===== 4. 检查并重新生成 secrets.sh =====
 if [[ ! -f "$ENC" ]]; then
     log "未找到 secrets.enc，跳过解密"
-    exit 0
+    [[ "$GIT_UPDATED" == "false" ]] && exit 0
+    return 0 2>/dev/null || exit 0
+fi
+
+# 检查 secrets.enc 是否有变化（通过 checksum）
+ENC_CHECKSUM=""
+if [[ -f "$SECRETS" ]]; then
+    ENC_CHECKSUM=$(shasum -a 256 "$ENC" | cut -d' ' -f1)
+    SECRETS_CHECKSUM=$(shasum -a 256 "$SECRETS" 2>/dev/null | cut -d' ' -f1 || echo "")
 fi
 
 if [[ ! -f "$PASSFILE" ]]; then
     log "未找到解密密码，请先运行 manage_secrets.sh"
-    exit 1
+    [[ "$GIT_UPDATED" == "false" ]] && exit 0
+    return 0 2>/dev/null || exit 0
 fi
+
+# 如果 git 没更新，检查 secrets.enc 是否真的变了
+if [[ "$GIT_UPDATED" == "false" ]]; then
+    ENC_CHECKSUM=$(shasum -a 256 "$ENC" | cut -d' ' -f1)
+    if [[ -f "$SECRETS" ]] && [[ "$ENC_CHECKSUM" == "$(cat "$SCRIPT_DIR/.enc_checksum" 2>/dev/null)" ]]; then
+        log "secrets.enc 无变化，跳过解密"
+        exit 0
+    fi
+    log "检测到 secrets.enc 有更新，重新解密..."
+fi
+
+# 保存当前的 checksum
+CURRENT_ENC_CHECKSUM=$(shasum -a 256 "$ENC" | cut -d' ' -f1)
 
 rm -f "$SECRETS"
 PASSWORD=$(cat "$PASSFILE")
@@ -99,5 +129,7 @@ if ! openssl enc -d -aes-256-cbc -salt -pbkdf2 \
     exit 1
 fi
 
-chmod 600 "$SECRETS"
+# 保存 checksum
+echo "$CURRENT_ENC_CHECKSUM" > "$SCRIPT_DIR/.enc_checksum"
+chmod 600 "$SECRETS" "$SCRIPT_DIR/.enc_checksum"
 log "secrets.sh 已重新生成"
