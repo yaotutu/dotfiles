@@ -16,6 +16,10 @@ fi
 source "${ZINIT_HOME}/zinit.zsh"
 
 # 🎨 提示符：使用 Starship（兼容 kitty shell integration）
+if ! (( $+commands[starship] )); then
+  mkdir -p ~/.local/bin
+  curl -sS https://starship.rs/install.sh | sh -s -- -y -b ~/.local/bin &>/dev/null
+fi
 eval "$(starship init zsh)"
 
 # 🎨 自动补全建议颜色（品红灰，与 starship 提示符协调）

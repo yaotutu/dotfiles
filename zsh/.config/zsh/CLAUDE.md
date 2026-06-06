@@ -7,6 +7,8 @@
 
 | ID | Time | T | Title | Read |
 |----|------|---|-------|------|
+| #5964 | 9:32 PM | 🔵 | Starship initialization wrapped with conditional check for starship command availability | ~298 |
+| #5963 | " | 🔄 | Added defensive check for starship command existence before initialization | ~306 |
 | #5959 | 7:37 PM | 🔵 | Agents.zsh file read for NVM performance investigation | ~233 |
 | #5947 | 7:11 PM | 🔄 | NVM converted from hard loading to lazy loading for improved shell startup performance | ~359 |
 | #5946 | " | 🔵 | Host-specific configuration file contains development tool setup without kitty-specific settings | ~333 |
