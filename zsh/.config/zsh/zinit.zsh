@@ -15,9 +15,11 @@ fi
 # 🚀 立即加载 Zinit 主程序
 source "${ZINIT_HOME}/zinit.zsh"
 
-# 🎨 立即加载漂亮主题 (Pure 主题)
-zinit light sindresorhus/pure
-_PRETTY_THEME_LOADED=true
+# 🎨 提示符：使用 Starship（兼容 kitty shell integration）
+eval "$(starship init zsh)"
+
+# 🎨 自动补全建议颜色（品红灰，与 starship 提示符协调）
+ZSH_AUTOSUGGEST_HIGHLIGHT_STYLE="fg=5"
 
 # 🚀 异步加载其他插件 - 正确的加载顺序避免ZLE警告
 zinit wait lucid for \
